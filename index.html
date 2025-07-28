@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Tutorial - Würfel sammeln | Für Schüler</title>
+    
+    <!-- A-Frame VR Framework -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <!-- Event System für Interaktionen -->
+    <script src="https://cdn.jsdelivr.net/gh/supermedium/superframe@master/components/event-set/dist/aframe-event-set-component.min.js"></script>
+    <!-- Sound-System -->
+    <script src="https://cdn.jsdelivr.net/gh/supermedium/superframe@master/components/audiohandler/dist/aframe-audiohandler-component.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Info-Panel für Desktop-Nutzer */
+        #info-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 300px;
+            z-index: 1000;
+        }
+        
+        #instructions {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Info für Desktop-Nutzer -->
+    <div id="info-panel">
+        <h3>🎮 VR-Tutorial Steuerung</h3>
+        <p><strong>Desktop:</strong> Mausklick auf Würfel</p>
+        <p><strong>VR:</strong> Controller-Trigger auf Würfel</p>
+        <p><strong>Mobil:</strong> Antippen der Würfel</p>
+        <button onclick="toggleInstructions()">Anleitung ein/aus</button>
+    </div>
+    
+    <div id="instructions">
+        <p id="current-instruction">🥽 Willkommen! Zeige auf den BLAUEN Würfel und drücke den Trigger!</p>
+    </div>
+
+    <!-- VR-Szene beginnt hier -->
+    <a-scene 
+        vr-mode-ui="enabled: true" 
+        background="color: #87CEEB"
+        fog="type: linear; color: #87CEEB; near: 1; far: 15"
+        loading-screen="backgroundColor: #001122"
+        renderer="antialias: true; colorManagement: true">
+        
+        <!-- Assets: Sounds und Materialien -->
+        <a-assets>
+            <!-- Cube-Materialien mit Glanz-Effekt -->
+            <a-mixin id="cube-material" 
+                     geometry="primitive: box; width: 0.8; height: 0.8; depth: 0.8"
+                     material="metalness: 0.2; roughness: 0.8; emissive: #111111">
+            </a-mixin>
+            
+            <!-- Hover-Animation für alle Würfel -->
+            <a-mixin id="hover-animation"
+                     animation__mouseenter="property: scale; to: 1.2 1.2 1.2; startEvents: mouseenter; dur: 200; easing: easeOutQuart"
+                     animation__mouseleave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200; easing: easeInQuart">
+            </a-mixin>
+            
+            <!-- Rotation-Animation für schwebende Würfel -->
+            <a-mixin id="float-animation"
+                     animation__float="property: position; to: 0 0.3 0; dir: alternate; dur: 2000; loop: true; easing: easeInOutSine"
+                     animation__rotate="property: rotation; to: 0 360 0; dur: 10000; loop: true; easing: linear">
+            </a-mixin>
+        </a-assets>
+
+        <!-- Anweisungs-Text (schwebt über der Szene) -->
+        <a-text id="instruction-text"
+                value="🥽 Willkommen im VR-Tutorial! Zeige auf den BLAUEN Würfel!"
+                position="0 3 -4"
+                align="center"
+                width="8"
+                color="white"
+                geometry="primitive: plane; width: auto; height: auto"
+                material="color: rgba(0,0,0,0.7); transparent: true"
+                animation__pulse="property: scale; to: 1.05 1.05 1; dir: alternate; dur: 1500; loop: true">
+        </a-text>
+
+        <!-- Score-Anzeige -->
+        <a-text id="score-display"
+                value="Würfel gesammelt: 0/4"
+                position="-4 3 -4"
+                align="left"
+                width="6"
+                color="#00FF00"
+                geometry="primitive: plane; width: auto; height: auto"
+                material="color: rgba(0,0,0,0.5); transparent: true">
+        </a-text>
+
+        <!-- Tutorial-Würfel -->
+        
+        <!-- 1. BLAUER Würfel (Start) -->
+        <a-entity id="blue-cube"
+                  class="interactive-cube"
+                  mixin="cube-material hover-animation float-animation"
+                  position="2 1.5 -3"
+                  material="color: #0066FF; emissive: #001133"
+                  data-cube-id="1"
+                  data-cube-color="blau"
+                  data-next-instruction="Super! Du hast den blauen Würfel gefunden! Jetzt suche den ROTEN Würfel!">
+        </a-entity>
+
+        <!-- 2. ROTER Würfel (versteckt) -->
+        <a-entity id="red-cube"
+                  class="interactive-cube"
+                  mixin="cube-material hover-animation float-animation"
+                  position="-2 1.2 -5"
+                  material="color: #FF3333; emissive: #331111"
+                  visible="false"
+                  data-cube-id="2"
+                  data-cube-color="rot"
+                  data-next-instruction="Fantastisch! Jetzt fehlen nur noch zwei. Finde den GRÜNEN Würfel!">
+        </a-entity>
+
+        <!-- 3. GRÜNER Würfel (versteckt) -->
+        <a-entity id="green-cube"
+                  class="interactive-cube"
+                  mixin="cube-material hover-animation float-animation"
+                  position="1 2 -6"
+                  material="color: #33AA33; emissive: #113311"
+                  visible="false"
+                  data-cube-id="3"
+                  data-cube-color="grün"
+                  data-next-instruction="Hervorragend! Nur noch einer! Finde den GELBEN Würfel!">
+        </a-entity>
+
+        <!-- 4. GELBER Würfel (versteckt) -->
+        <a-entity id="yellow-cube"
+                  class="interactive-cube"
+                  mixin="cube-material hover-animation float-animation"
+                  position="-3 1.8 -4"
+                  material="color: #FFDD00; emissive: #333300"
+                  visible="false"
+                  data-cube-id="4"
+                  data-cube-color="gelb"
+                  data-next-instruction="🎉 GRATULATION! Du hast alle Würfel gefunden! Tutorial abgeschlossen! 🎉">
+        </a-entity>
+
+        <!-- Umgebung: Boden -->
+        <a-plane id="ground"
+                 position="0 0 -4"
+                 rotation="-90 0 0"
+                 width="20"
+                 height="20"
+                 color="#CCCCCC"
+                 material="roughness: 0.8; metalness: 0.1"
+                 shadow="receive: true">
+        </a-plane>
+
+        <!-- Umgebung: Wände -->
+        <a-plane position="0 3 -12" width="24" height="6" color="#DDDDDD" material="roughness: 0.9"></a-plane>
+        <a-plane position="-12 3 0" rotation="0 90 0" width="24" height="6" color="#DDDDDD" material="roughness: 0.9"></a-plane>
+        <a-plane position="12 3 0" rotation="0 -90 0" width="24" height="6" color="#DDDDDD" material="roughness: 0.9"></a-plane>
+
+        <!-- Beleuchtung -->
+        <a-light type="ambient" color="#404040" intensity="0.4"></a-light>
+        <a-light type="directional" 
+                 position="2 4 1" 
+                 color="#FFFFFF" 
+                 intensity="0.8"
+                 shadow="cast: true; mapSize: 2048">
+        </a-light>
+        <a-light type="point" 
+                 position="-2 3 -2" 
+                 color="#AACCFF" 
+                 intensity="0.3">
+        </a-light>
+
+        <!-- VR-Controller (Links) -->
+        <a-entity id="left-controller"
+                  laser-controls="hand: left"
+                  raycaster="objects: .interactive-cube; lineColor: #00AAFF; lineOpacity: 0.8"
+                  line="color: #00AAFF; opacity: 0.8">
+        </a-entity>
+
+        <!-- VR-Controller (Rechts) -->
+        <a-entity id="right-controller"
+                  laser-controls="hand: right"
+                  raycaster="objects: .interactive-cube; lineColor: #FF6600; lineOpacity: 0.8"
+                  line="color: #FF6600; opacity: 0.8">
+        </a-entity>
+
+        <!-- Desktop-Kamera (automatisch aktiv wenn kein VR) -->
+        <a-camera id="desktop-camera"
+                  look-controls="pointerLockEnabled: false"
+                  wasd-controls="acceleration: 20"
+                  position="0 1.6 0"
+                  cursor="rayOrigin: mouse; fuse: false">
+            <a-cursor geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                      material="color: #00AAFF; shader: flat; opacity: 0.8">
+            </a-cursor>
+        </a-camera>
+
+    </a-scene>
+
+    <!-- JavaScript: Spiellogik -->
+    <script>
+        // ============================================
+        // TUTORIAL-STEUERUNG UND SPIELLOGIK
+        // ============================================
+        
+        // Spiel-Zustand
+        let gameState = {
+            cubesCollected: 0,
+            totalCubes: 4,
+            currentStep: 1,
+            isCompleted: false
+        };
+
+        // Würfel-Reihenfolge
+        const cubeSequence = ['blue-cube', 'red-cube', 'green-cube', 'yellow-cube'];
+        
+        // DOM-Elemente
+        const instructionText = document.querySelector('#instruction-text');
+        const scoreDisplay = document.querySelector('#score-display');
+        const desktopInstructions = document.querySelector('#current-instruction');
+
+        // ============================================
+        // HAUPT-SPIELLOGIK
+        // ============================================
+        
+        function initializeGame() {
+            console.log('🎮 VR-Tutorial gestartet!');
+            
+            // Alle Würfel mit Event-Listenern ausstatten
+            document.querySelectorAll('.interactive-cube').forEach(cube => {
+                // VR + Desktop Interaktion
+                cube.addEventListener('click', handleCubeClick);
+                
+                // Hover-Effekte für besseres Feedback
+                cube.addEventListener('mouseenter', function() {
+                    this.setAttribute('material', 
+                        this.getAttribute('material') + '; emissiveIntensity: 0.3');
+                });
+                
+                cube.addEventListener('mouseleave', function() {
+                    this.setAttribute('material', 
+                        this.getAttribute('material').replace('; emissiveIntensity: 0.3', ''));
+                });
+            });
+            
+            updateUI();
+        }
+
+        function handleCubeClick(event) {
+            const clickedCube = event.target;
+            const cubeId = clickedCube.getAttribute('data-cube-id');
+            const cubeColor = clickedCube.getAttribute('data-cube-color');
+            
+            console.log(`🎯 Würfel angeklickt: ${cubeColor} (ID: ${cubeId})`);
+            
+            // Prüfen ob richtiger Würfel zur richtigen Zeit
+            if (parseInt(cubeId) === gameState.currentStep) {
+                collectCube(clickedCube);
+            } else {
+                showWrongCubeFeedback(cubeColor);
+            }
+        }
+
+        function collectCube(cube) {
+            const cubeColor = cube.getAttribute('data-cube-color');
+            const nextInstruction = cube.getAttribute('data-next-instruction');
+            
+            console.log(`✅ Richtiger Würfel gesammelt: ${cubeColor}`);
+            
+            // Würfel-Sammel-Animation
+            cube.setAttribute('animation__collect', 
+                'property: scale; to: 0 0 0; dur: 500; easing: easeInQuart');
+            cube.setAttribute('animation__spin', 
+                'property: rotation; to: 0 720 0; dur: 500; easing: easeInQuart');
+            
+            // Spiel-Zustand aktualisieren
+            gameState.cubesCollected++;
+            gameState.currentStep++;
+            
+            // Nach Animation: Würfel verstecken und nächsten zeigen
+            setTimeout(() => {
+                cube.setAttribute('visible', false);
+                showNextCube();
+                updateInstructions(nextInstruction);
+                updateUI();
+                
+                // Spiel abgeschlossen?
+                if (gameState.cubesCollected === gameState.totalCubes) {
+                    completeGame();
+                }
+            }, 500);
+        }
+
+        function showNextCube() {
+            if (gameState.currentStep <= gameState.totalCubes) {
+                const nextCubeId = cubeSequence[gameState.currentStep - 1];
+                const nextCube = document.querySelector(`#${nextCubeId}`);
+                
+                if (nextCube) {
+                    // Würfel erscheinen lassen
+                    nextCube.setAttribute('visible', true);
+                    
+                    // Aufmerksamkeits-Animation
+                    nextCube.setAttribute('animation__appear', 
+                        'property: scale; from: 0 0 0; to: 1 1 1; dur: 800; easing: easeOutBounce');
+                    
+                    console.log(`🆕 Nächster Würfel erscheint: ${nextCubeId}`);
+                }
+            }
+        }
+
+        function showWrongCubeFeedback(cubeColor) {
+            console.log(`❌ Falscher Würfel: ${cubeColor}`);
+            
+            // Temporäre Fehlermeldung
+            const currentText = instructionText.getAttribute('value');
+            instructionText.setAttribute('value', `❌ Das ist der ${cubeColor}e Würfel, aber du brauchst einen anderen!`);
+            instructionText.setAttribute('material', 'color: rgba(255,0,0,0.8)');
+            
+            // Nach 2 Sekunden zurück zur normalen Anweisung
+            setTimeout(() => {
+                instructionText.setAttribute('value', currentText);
+                instructionText.setAttribute('material', 'color: rgba(0,0,0,0.7)');
+            }, 2000);
+        }
+
+        function updateInstructions(newInstruction) {
+            instructionText.setAttribute('value', newInstruction);
+            desktopInstructions.textContent = newInstruction;
+            
+            // Puls-Animation für neue Anweisung
+            instructionText.setAttribute('animation__newinstruction', 
+                'property: scale; from: 1 1 1; to: 1.1 1.1 1; dur: 300; dir: alternate; loop: 2');
+        }
+
+        function updateUI() {
+            const scoreText = `Würfel gesammelt: ${gameState.cubesCollected}/${gameState.totalCubes}`;
+            scoreDisplay.setAttribute('value', scoreText);
+            
+            // Fortschritts-Farbe ändern
+            const progress = gameState.cubesCollected / gameState.totalCubes;
+            const green = Math.floor(255 * progress);
+            const red = Math.floor(255 * (1 - progress));
+            scoreDisplay.setAttribute('color', `rgb(${red}, ${green}, 0)`);
+        }
+
+        function completeGame() {
+            console.log('🎉 Spiel abgeschlossen!');
+            gameState.isCompleted = true;
+            
+            // Feuerwerk-Effekt (einfache Partikel)
+            createCelebrationEffect();
+            
+            // Spiel-Ende UI
+            setTimeout(() => {
+                instructionText.setAttribute('value', 
+                    '🎉 HERZLICHEN GLÜCKWUNSCH! 🎉\nDu hast alle Würfel gefunden!\n\nDrücke R zum Neustarten');
+                instructionText.setAttribute('color', '#00FF00');
+            }, 1000);
+        }
+
+        function createCelebrationEffect() {
+            // Einfacher Partikel-Effekt
+            for(let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('a-sphere');
+                    particle.setAttribute('radius', '0.1');
+                    particle.setAttribute('color', `hsl(${Math.random() * 360}, 100%, 50%)`);
+                    particle.setAttribute('position', `${(Math.random()-0.5)*4} 4 ${-3 + (Math.random()-0.5)*2}`);
+                    particle.setAttribute('animation', 
+                        'property: position; to: 0 0 -3; dur: 2000; easing: easeInQuart');
+                    
+                    document.querySelector('a-scene').appendChild(particle);
+                    
+                    // Partikel nach Animation entfernen
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 2000);
+                }, i * 100);
+            }
+        }
+
+        function restartGame() {
+            console.log('🔄 Spiel wird neugestartet...');
+            
+            // Zustand zurücksetzen
+            gameState = {
+                cubesCollected: 0,
+                totalCubes: 4,
+                currentStep: 1,
+                isCompleted: false
+            };
+            
+            // Alle Würfel verstecken außer dem blauen
+            cubeSequence.forEach((cubeId, index) => {
+                const cube = document.querySelector(`#${cubeId}`);
+                if (index === 0) {
+                    cube.setAttribute('visible', true);
+                    cube.setAttribute('scale', '1 1 1');
+                } else {
+                    cube.setAttribute('visible', false);
+                }
+            });
+            
+            // UI zurücksetzen
+            updateInstructions('🥽 Willkommen im VR-Tutorial! Zeige auf den BLAUEN Würfel!');
+            instructionText.setAttribute('color', 'white');
+            updateUI();
+        }
+
+        // ============================================
+        // UTILITY FUNKTIONEN
+        // ============================================
+        
+        function toggleInstructions() {
+            const instructions = document.querySelector('#instructions');
+            instructions.style.display = 
+                instructions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Tastatur-Steuerung für Desktop
+        document.addEventListener('keydown', function(event) {
+            switch(event.key.toLowerCase()) {
+                case 'r':
+                    if (gameState.isCompleted) {
+                        restartGame();
+                    }
+                    break;
+                case 'h':
+                    toggleInstructions();
+                    break;
+                case 'f':
+                    // Vollbild für bessere Desktop-Erfahrung
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    }
+                    break;
+            }
+        });
+
+        // ============================================
+        // SPIEL STARTEN
+        // ============================================
+        
+        // Warten bis A-Frame geladen ist
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kurze Verzögerung für A-Frame Initialisierung
+            setTimeout(initializeGame, 1000);
+        });
+        
+        console.log('📚 VR-Tutorial geladen! Bereit für Schüler-Experimente! 🚀');
+    </script>
+</body>
+</html>
