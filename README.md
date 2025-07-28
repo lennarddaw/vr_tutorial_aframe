@@ -1,187 +1,235 @@
-# 🥽 VR Tutorial - Interactive Cube Collection
+# 🚀 VR CodeLab - Interaktives Programmieren Lernen
 
-[![VR Platform](https://img.shields.io/badge/VR-Meta%20Quest%20%7C%20Pico%204-blue)](https://aframe.io/)
-[![A-Frame](https://img.shields.io/badge/A--Frame-1.4.0-orange)](https://aframe.io/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Education](https://img.shields.io/badge/Education-STEM-purple)](https://github.com/)
+Ein innovatives VR-Bildungsspiel, das Schülern spielerisch die Grundlagen des Programmierens beibringt. Durch das Kombinieren von visuellen Code-Blöcken in einer immersiven 3D-Umgebung lernen Schüler echte Programmierkonzepte kennen.
 
-An **educational VR application** built with A-Frame for teaching web-based VR development. Students collect colored cubes in sequence while learning HTML, JavaScript, and 3D programming concepts.
+## 🎯 Projektziel
+
+VR CodeLab wurde entwickelt, um:
+- **Programmierkonzepte visuell zu vermitteln** durch interaktive 3D-Code-Blöcke
+- **Schüler auf echtes Programmieren vorzubereiten** mit realitätsnahen JavaScript-Syntax
+- **Multiple Lernwege zu unterstützen** - VR, Desktop und Mobile
+- **Progressive Herausforderungen anzubieten** mit steigender Komplexität
 
 ## ✨ Features
 
-- 🎯 **Progressive Tutorial System** - Guided cube collection in sequence
-- 🎮 **Cross-Platform Support** - Desktop, VR headsets, and mobile
-- 📚 **Educational Focus** - Designed for STEM curriculum integration
-- 🛠️ **Easy Customization** - HTML/JavaScript for extensibility
-- 🚀 **Zero Installation** - Runs directly in web browsers
+### 🎮 Multi-Platform Unterstützung
+- **VR-Headsets**: Vollständige VR-Erfahrung mit Hand-Controllern
+- **Desktop**: Maus-basierte Interaktion mit Keyboard-Shortcuts
+- **Mobile**: Touch-Gesten für Tablet und Smartphone
 
-## 🚀 Quick Start
+### 📚 Programmier-Konzepte
+- **🟦 Variablen**: Datenspeicherung und -verwaltung
+- **🟨 Funktionen**: Code-Ausführung und Ausgabe
+- **🟩 Schleifen**: Wiederholungsstrukturen
+- **🟥 Bedingungen**: Logische Entscheidungen
 
-### 1. Setup
-```bash
-git clone https://github.com/your-username/vr-tutorial.git
-cd vr-tutorial
-```
+### 🎓 Pädagogische Features
+- **Progressive Level**: 5 aufeinander aufbauende Schwierigkeitsstufen
+- **CodeBot-Lehrer**: Interaktiver Roboter-Tutor mit Hilfestellungen
+- **Echtzeit-Feedback**: Sofortige Rückmeldung zu erstellten Programmen
+- **Gamification**: Punkte, Achievements und Erfolgs-Animationen
 
-### 2. Run Locally
-```bash
-# Open index.html in browser (Chrome/Firefox recommended)
-# Or serve with local server:
-python -m http.server 8000
-```
+### 🔧 Technische Highlights
+- **A-Frame VR Framework**: Moderne WebVR-Technologie
+- **Modularer Code**: Aufgeteilte Logik für bessere Wartbarkeit
+- **Responsive Design**: Optimiert für alle Bildschirmgrößen
+- **Accessibility**: Barrierefreie Bedienelemente
 
-### 3. VR Mode
-- **Meta Quest/Pico**: Open browser → Load file → "Enter VR"
-- **Desktop**: Mouse click to interact
-- **Mobile**: Touch to interact
-
-## 🎮 How It Works
-
-1. **Blue Cube** - Point and trigger to collect
-2. **Red Cube** - Appears after blue cube collection
-3. **Green Cube** - Third in sequence
-4. **Yellow Cube** - Final cube completes tutorial
-5. **Completion** - Success feedback and restart option
-
-## 🛠️ Technical Requirements
-
-### Minimum Requirements
-- **Browser**: Chrome 70+, Firefox 65+, Edge 79+
-- **VR Headsets**: Meta Quest 1/2/3, Pico 3/4, HTC Vive, Oculus Rift
-- **Mobile**: Android 7+, iOS 11+
-
-### Technology Stack
-- **A-Frame 1.4.0** - VR framework
-- **WebXR API** - VR hardware access
-- **HTML5/CSS3** - Structure and styling
-- **JavaScript ES6+** - Interaction logic
-
-## 📁 Project Structure
+## 🏗️ Projektstruktur
 
 ```
-vr-tutorial/
-├── index.html          # Main VR application
-├── README.md           # Documentation
-├── LICENSE             # MIT license
-├── docs/               # Additional documentation
-└── examples/           # Extension examples
+VR-CodeLab/
+├── index.html          # Haupt-HTML mit VR-Szene
+├── styles.css          # Modernes CSS-Styling
+├── game-logic.js       # Kern-Spiellogik und Level-System
+├── drag-drop.js        # Interaktionssystem für Code-Blöcke
+├── ui-controller.js    # Benutzeroberflächen-Management
+└── README.md           # Projektdokumentation
 ```
 
-## 🎓 For Educators
+## 🚀 Installation & Setup
 
-### Learning Objectives
-- **3D Programming**: Coordinate systems and spatial thinking
-- **Web Technologies**: HTML, CSS, JavaScript fundamentals
-- **VR Development**: A-Frame framework and WebXR APIs
-- **Problem Solving**: Debugging and code modification
+### Voraussetzungen
+- Moderner Webbrowser mit WebVR-Unterstützung
+- Lokaler Webserver (für optimale Performance)
 
-### Classroom Integration
+### Schnellstart
+1. **Repository klonen oder herunterladen**
+2. **Lokalen Server starten** (empfohlen):
+   ```bash
+   # Mit Python 3
+   python -m http.server 8000
+   
+   # Mit Node.js (live-server)
+   npx live-server
+   
+   # Mit PHP
+   php -S localhost:8000
+   ```
+3. **Browser öffnen**: `http://localhost:8000`
+4. **VR-Headset verbinden** (optional)
+
+### VR-Setup
+- **Oculus Quest/Rift**: WebXR über Oculus Browser
+- **HTC Vive**: WebVR über SteamVR
+- **Windows Mixed Reality**: Edge Browser mit WebVR
+- **Mobile VR**: Google Cardboard oder Samsung Gear VR
+
+## 🎮 Spielanleitung
+
+### Level-Übersicht
+
+#### Level 1: Erste Schritte
+- **Konzept**: Variablen und Ausgabe
+- **Aufgabe**: Erstelle eine Variable und gib sie aus
+- **Blöcke**: `let name = 'Schüler'`, `console.log(name)`
+
+#### Level 2: Entscheidungen treffen
+- **Konzept**: If-Bedingungen
+- **Aufgabe**: Alterscheck-Programm erstellen
+- **Blöcke**: Variablen + If-Bedingungen + Ausgabe
+
+#### Level 3: Wiederholungen
+- **Konzept**: For-Schleifen
+- **Aufgabe**: Zähl-Programm von 1 bis 3
+- **Blöcke**: For-Schleife + Ausgabe
+
+#### Level 4: Alles kombinieren
+- **Konzept**: Komplexe Programme
+- **Aufgabe**: Alle Konzepte in einem Programm
+- **Blöcke**: Alle verfügbaren Typen
+
+#### Level 5: Freies Programmieren
+- **Konzept**: Kreativität
+- **Aufgabe**: Eigenes Programm erstellen
+- **Blöcke**: Freie Auswahl
+
+### Steuerung
+
+| Plattform | Aktion | Bedienung |
+|-----------|--------|-----------|
+| **VR** | Block greifen | Trigger-Taste |
+| **VR** | Block loslassen | Trigger loslassen |
+| **Desktop** | Block ziehen | Maus klicken & ziehen |
+| **Mobile** | Block verschieben | Touch & Drag |
+
+### Tastenkürzel (Desktop)
+- **H**: Hilfe ein/ausblenden
+- **Ctrl + R**: Arbeitsbereich zurücksetzen
+- **Ctrl + Enter**: Code ausführen
+- **ESC**: Vollbild verlassen
+
+## 🔧 Technische Details
+
+### Architektur
+
+#### Core Module
+- **game-logic.js**: Level-Management, Challenge-System, Robot-AI
+- **drag-drop.js**: VR/Desktop/Mobile Interaktionen
+- **ui-controller.js**: UI-Management, Notifications, Themes
+
+#### A-Frame Komponenten
+- **grab-system**: VR-Controller Interaktionen
+- **workspace**: Drop-Zone für Code-Blöcke
+- **code-block**: Visuelle Programmier-Blöcke
+
+#### Responsive Features
+- **CSS Grid**: Flexible Layout-Systeme
+- **Media Queries**: Mobile-optimierte Ansichten
+- **Viewport Detection**: Automatische Anpassung
+
+### Performance-Optimierungen
+- **Lazy Loading**: Blöcke werden nur bei Bedarf geladen
+- **Object Pooling**: Wiederverwendung von Partikeln
+- **LOD-System**: Level-of-Detail für VR
+- **Texture Compression**: Optimierte Materialien
+
+## 🎨 Anpassungen
+
+### Theme-System
 ```javascript
-// Week 1: HTML Basics - modify colors and positions
-<a-box color="blue" position="0 1 -3"></a-box>
+// Dark Theme (Standard)
+UIController.applyTheme('dark');
 
-// Week 2: JavaScript Events - add interactivity
-cube.addEventListener('click', function() {
-    console.log('Student programmed this!');
-});
-
-// Week 3: Custom Features - creative extensions
-function createRandomCube() {
-    // Student-designed functionality
-}
+// Light Theme
+UIController.applyTheme('light');
 ```
 
-### Assessment Rubric
-- **Basic**: Runs in browser, minor modifications made
-- **Intermediate**: JavaScript functions added, new objects created
-- **Advanced**: Custom levels designed, innovative features implemented
+### Neue Level hinzufügen
+```javascript
+// In game-logic.js
+const LEVELS = {
+    6: {
+        title: "Mein neues Level",
+        description: "Beschreibung...",
+        requiredBlocks: ["variable", "function"],
+        challenges: [/* ... */]
+    }
+};
+```
 
-## 🔧 Customization
-
-### Adding New Cubes
+### Custom Code-Blöcke
 ```html
-<a-entity id="purple-cube"
-          class="interactive-cube"
-          position="4 1 -3"
-          material="color: purple">
+<!-- Neuer Block in index.html -->
+<a-entity id="custom-block"
+          mixin="code-block-base"
+          material="color: #purple"
+          data-block-type="custom"
+          data-block-code="// Mein Code">
+    <a-text value="Mein Block" /* ... */></a-text>
 </a-entity>
 ```
 
-### Modifying Sequence
-```javascript
-const cubeSequence = ['blue-cube', 'red-cube', 'green-cube', 'yellow-cube'];
-// Add your cubes here
-```
+## 🤝 Pädagogischer Einsatz
 
-### Adding Sound Effects
-```html
-<a-assets>
-    <audio id="success" src="success.mp3"></audio>
-</a-assets>
-```
+### Klassenzimmer-Integration
+- **Einzel-Stationen**: Ein VR-Headset pro Arbeitsplatz
+- **Gruppen-Aktivität**: Gemeinsames Problemlösen
+- **Demo-Modus**: Lehrer zeigt Konzepte auf Bildschirm
 
-## 🌐 Deployment
+### Lernziele
+- **Computational Thinking**: Problemzerlegung und Abstraktion
+- **Syntax-Verständnis**: Echte JavaScript-Strukturen
+- **Debugging-Skills**: Fehler erkennen und korrigieren
+- **Kreativität**: Eigene Programme entwickeln
 
-### GitHub Pages
-```bash
-1. Push to GitHub repository
-2. Enable Pages in repository settings
-3. Share URL: https://username.github.io/vr-tutorial/
-```
+### Bewertungsmöglichkeiten
+- **Level-Fortschritt**: Automatisches Tracking
+- **Code-Qualität**: Effizienz der Lösungen
+- **Kreativität**: Innovation in freien Aufgaben
+- **Kollaboration**: Teamwork bei Gruppenprojekten
 
-### Alternative Hosting
-- **Netlify**: Drag & drop deployment
-- **Vercel**: Git integration
-- **Local Server**: `python -m http.server 8000`
+## 🔮 Zukunftspläne
 
-## 🐛 Troubleshooting
+### Geplante Features
+- [ ] **Multiplayer-Modus**: Gemeinsames Programmieren
+- [ ] **Code-Export**: Programme als echte .js Dateien
+- [ ] **Erweiterte Blöcke**: Objekte, Arrays, Funktionen
+- [ ] **Sound-Integration**: Audio-Feedback für Aktionen
+- [ ] **Teacher-Dashboard**: Fortschritts-Monitoring
 
-| Issue | Solution |
-|-------|----------|
-| VR mode not working | Use HTTPS, check headset connection |
-| Cubes not clickable | Verify `class="interactive-cube"` attribute |
-| Poor performance | Reduce quality settings, disable shadows |
-| Audio not playing | Ensure user interaction before audio |
+### Technische Verbesserungen
+- [ ] **WebAssembly**: Performance-Optimierung
+- [ ] **Service Worker**: Offline-Funktionalität
+- [ ] **WebRTC**: Peer-to-Peer Kollaboration
+- [ ] **Machine Learning**: Adaptive Schwierigkeit
 
-## 🤝 Contributing
+## 📄 Lizenz
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -m 'Add new feature'`
-4. Push to branch: `git push origin feature/new-feature`
-5. Submit pull request
+Dieses Projekt steht unter der MIT-Lizenz - siehe [LICENSE](LICENSE) für Details.
 
-### Development Guidelines
-- **Code Style**: ES6+, semantic HTML, documented functions
-- **Testing**: Verify on desktop and VR before submitting
-- **Documentation**: Update README for new features
+## 🙏 Danksagungen
 
-## 📚 Resources
+- **A-Frame Team**: Für das fantastische WebVR-Framework
+- **Bildungsexperten**: Für pädagogische Beratung
+- **Beta-Tester**: Schüler und Lehrer für wertvolles Feedback
 
-- **[A-Frame Documentation](https://aframe.io/docs/)** - Official framework docs
-- **[A-Frame School](https://aframe.io/aframe-school/)** - Interactive tutorials
-- **[WebXR Samples](https://immersive-web.github.io/webxr-samples/)** - Advanced examples
+## 📞 Kontakt & Support
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [A-Frame Team](https://aframe.io/) for the excellent VR framework
-- [Mozilla](https://mozilla.org/) for pioneering web VR
-- Educational community for feedback and suggestions
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/vr-tutorial/issues)
-- **Documentation**: See `docs/` folder for detailed guides
-- **Community**: Join the A-Frame Discord for help
+- **Issues**: [GitHub Issues](https://github.com/username/vr-codelab/issues)
+- **Diskussionen**: [GitHub Discussions](https://github.com/username/vr-codelab/discussions)
+- **Email**: support@vr-codelab.edu
 
 ---
 
-**Built with ❤️ for education and open source**
-
-[![A-Frame](https://img.shields.io/badge/Built%20with-A--Frame-orange)](https://aframe.io/)
-[![Education](https://img.shields.io/badge/Made%20for-Education-blue)](https://github.com/)
-[![Open Source](https://img.shields.io/badge/❤️-Open%20Source-green)](https://github.com/)
+**Entwickelt mit ❤️ für die nächste Generation von Programmierern**
