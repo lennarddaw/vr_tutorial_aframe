@@ -132,8 +132,10 @@ function initializeGame() {
     // Event Listeners einrichten
     setupEventListeners();
     
-    // VR-spezifische Initialisierung
-    setupVRInteractions();
+    // Interaktionssystem initialisieren
+    if (window.SimpleInteractions) {
+        window.SimpleInteractions.initializeSimpleInteractions();
+    }
     
     console.log('✅ Spiel initialisiert');
 }
@@ -213,21 +215,18 @@ function updateTaskDescription(level) {
 }
 
 function showLevelBlocks(requiredBlocks) {
-    // Alle Blöcke verstecken
-    document.querySelectorAll('.code-block').forEach(block => {
-        block.setAttribute('visible', 'false');
-    });
-    
-    // Nur benötigte Blöcke zeigen
-    requiredBlocks.forEach(blockType => {
-        const blocks = document.querySelectorAll(`[data-block-type="${blockType}"]`);
-        blocks.forEach(block => {
-            block.setAttribute('visible', 'true');
-            // Erscheinungs-Animation
-            block.setAttribute('animation__appear', 
-                'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack');
+    // Verwende das einfache Interaktionssystem
+    if (window.SimpleInteractions) {
+        window.SimpleInteractions.showLevelBlocksSimple(requiredBlocks);
+    } else {
+        // Fallback
+        requiredBlocks.forEach(blockType => {
+            const blocks = document.querySelectorAll(`[data-block-type="${blockType}"]`);
+            blocks.forEach(block => {
+                block.setAttribute('visible', 'true');
+            });
         });
-    });
+    }
 }
 
 // ===========================
@@ -466,8 +465,13 @@ function resetWorkspace() {
     GameState.currentCode = [];
     updateCodeDisplay();
     
-    // Alle platzierten Blöcke entfernen (visuelle Reset)
-    const workspaceBlocks = document.querySelectorAll('.workspace .code-block');
+    // Einfaches Interaktionssystem workspace leeren
+    if (window.SimpleInteractions) {
+        window.SimpleInteractions.clearWorkspaceSimple();
+    }
+    
+    // Zusätzlich alle workspace-block Elemente entfernen
+    const workspaceBlocks = document.querySelectorAll('.workspace-block');
     workspaceBlocks.forEach(block => block.remove());
     
     showRobotMessage("Arbeitsbereich zurückgesetzt. Lass uns von vorne anfangen!");

@@ -44,10 +44,79 @@ function setupVRInteractions() {
     setupTouchInteractions();
     setupVRControllerInteractions();
     
+    // A-Frame spezifische Event Listeners
+    setupAFrameInteractions();
+    
     // Workspace-Positionen initialisieren
     initializeWorkspacePositions();
     
     console.log('✅ VR-Interaktionen bereit');
+}
+
+function setupAFrameInteractions() {
+    // Warte bis A-Frame vollständig geladen ist
+    const scene = document.querySelector('a-scene');
+    
+    if (scene.hasLoaded) {
+        initializeAFrameEvents();
+    } else {
+        scene.addEventListener('loaded', initializeAFrameEvents);
+    }
+}
+
+function initializeAFrameEvents() {
+    // Alle grabbable Entities mit Event Listeners ausstatten
+    const grabbableEntities = document.querySelectorAll('.grabbable');
+    
+    grabbableEntities.forEach(entity => {
+        // Mouse Events
+        entity.addEventListener('mousedown', handleAFrameMouseDown);
+        entity.addEventListener('mouseup', handleAFrameMouseUp);
+        
+        // VR Controller Events
+        entity.addEventListener('triggerdown', handleAFrameTriggerDown);
+        entity.addEventListener('triggerup', handleAFrameTriggerUp);
+        
+        // Touch Events für Mobile
+        entity.addEventListener('touchstart', handleAFrameTouchStart);
+        entity.addEventListener('touchend', handleAFrameTouchEnd);
+        
+        console.log('📦 Event Listeners hinzugefügt für:', entity.id);
+    });
+}
+
+function handleAFrameMouseDown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    startDrag(event.target, null, event);
+}
+
+function handleAFrameMouseUp(event) {
+    if (DragDropState.isDragging) {
+        endDrag();
+    }
+}
+
+function handleAFrameTriggerDown(event) {
+    startDrag(event.target, event.detail.cursorEl);
+}
+
+function handleAFrameTriggerUp(event) {
+    if (DragDropState.isDragging) {
+        endDrag();
+    }
+}
+
+function handleAFrameTouchStart(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    startDrag(event.target, null, touch);
+}
+
+function handleAFrameTouchEnd(event) {
+    if (DragDropState.isDragging) {
+        endDrag();
+    }
 }
 
 // ===========================
@@ -55,6 +124,13 @@ function setupVRInteractions() {
 // ===========================
 
 function registerGrabComponent() {
+    // Prüfe ob A-Frame verfügbar ist
+    if (typeof AFRAME === 'undefined') {
+        console.log('⏳ A-Frame noch nicht geladen, warte...');
+        setTimeout(registerGrabComponent, 100);
+        return;
+    }
+    
     AFRAME.registerComponent('grab-system', {
         schema: {
             hand: { type: 'string', default: 'right' }
@@ -91,6 +167,13 @@ function registerGrabComponent() {
 }
 
 function registerWorkspaceComponent() {
+    // Prüfe ob A-Frame verfügbar ist
+    if (typeof AFRAME === 'undefined') {
+        console.log('⏳ A-Frame noch nicht geladen, warte...');
+        setTimeout(registerWorkspaceComponent, 100);
+        return;
+    }
+    
     AFRAME.registerComponent('workspace', {
         init: function() {
             this.el.classList.add('drop-zone');
@@ -119,12 +202,30 @@ function setupMouseInteractions() {
 }
 
 function handleMouseDown(event) {
-    // Nur auf A-Frame Elementen
-    if (!event.target.hasAttribute('class') || !event.target.classList.contains('grabbable')) {
-        return;
+    // Prüfe ob es ein A-Frame Element ist
+    const target = event.target;
+    
+    // Suche nach dem nächsten A-Frame Entity mit grabbable class
+    let blockElement = target;
+    while (blockElement && !blockElement.hasAttribute('mixin')) {
+        if (blockElement.classList && blockElement.classList.contains('grabbable')) {
+            break;
+        }
+        blockElement = blockElement.parentElement;
     }
     
-    const blockElement = event.target;
+    // Wenn kein grabbable Element gefunden, prüfe A-Frame Entities
+    if (!blockElement || !blockElement.classList.contains('grabbable')) {
+        // Für A-Frame Entities
+        const aframeTarget = target.closest('a-entity');
+        if (aframeTarget && aframeTarget.classList.contains('grabbable')) {
+            blockElement = aframeTarget;
+        } else {
+            return;
+        }
+    }
+    
+    event.preventDefault();
     startDrag(blockElement, null, event);
 }
 
@@ -237,14 +338,25 @@ function updateDragPosition(inputEvent) {
         return;
     }
     
+    // Für A-Frame Entities: Position nur während Drag in moderaten Grenzen ändern
+    const currentPos = DragDropState.currentDraggedBlock.getAttribute('position');
     const camera = document.querySelector('[camera]');
-    const cameraRotation = camera.getAttribute('rotation');
     
-    // 2D zu 3D Konvertierung (vereinfacht)
-    const newPosition = screenTo3D(inputEvent, camera);
+    // Sanfte Bewegung basierend auf Maus-Delta
+    const rect = document.querySelector('a-scene').getBoundingClientRect();
+    const mouseX = (inputEvent.clientX - rect.left) / rect.width;
+    const mouseY = (inputEvent.clientY - rect.top) / rect.height;
+    
+    // Begrenzte Bewegung um die ursprüngliche Position
+    const newPosition = {
+        x: DragDropState.originalPosition.x + (mouseX - 0.5) * 2,
+        y: DragDropState.originalPosition.y + (0.5 - mouseY) * 1,
+        z: DragDropState.originalPosition.z
+    };
     
     // Position aktualisieren
-    DragDropState.currentDraggedBlock.setAttribute('position', newPosition);
+    DragDropState.currentDraggedBlock.setAttribute('position', 
+        `${newPosition.x} ${newPosition.y} ${newPosition.z}`);
     
     // Snap-Vorschau
     updateSnapPreview(newPosition);
@@ -371,16 +483,13 @@ function getNextWorkspacePosition() {
 }
 
 function placeBlockInWorkspace(blockElement, position) {
-    // Block an neue Position setzen
-    blockElement.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
-    
-    // Platzierungs-Animation
-    blockElement.setAttribute('animation__place', 
-        'property: scale; from: 1.2 1.2 1.2; to: 1 1 1; dur: 300; easing: easeOutBack');
-    
     // Block-Kopie erstellen (Original bleibt verfügbar)
     const blockCopy = createBlockCopy(blockElement);
     blockCopy.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
+    
+    // Platzierungs-Animation
+    blockCopy.setAttribute('animation__place', 
+        'property: scale; from: 1.2 1.2 1.2; to: 1 1 1; dur: 300; easing: easeOutBack');
     
     // Zur Workspace hinzufügen
     document.querySelector('#main-platform').appendChild(blockCopy);
