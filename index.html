@@ -388,10 +388,12 @@
                   look-controls="pointerLockEnabled: false"
                   wasd-controls="acceleration: 20; fly: true"
                   position="0 2 2"
-                  cursor="rayOrigin: mouse; fuse: false"
-                  raycaster="objects: .grabbable">
-            <a-cursor geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                      material="color: #00d4ff; shader: flat; opacity: 0.9">
+                  cursor="rayOrigin: mouse; fuse: false; fuseTimeout: 1500"
+                  raycaster="objects: .grabbable; far: 20; interval: 100">
+            <a-cursor id="cursor"
+                      geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                      material="color: #00d4ff; shader: flat; opacity: 0.9"
+                      raycaster="objects: .grabbable">
             </a-cursor>
         </a-camera>
 
@@ -404,6 +406,7 @@
     <!-- External JavaScript -->
     <script src="game-logic.js"></script>
     <script src="simple-interactions.js"></script>
+    <script src="emergency-click.js"></script>
     <script src="ui-controller.js"></script>
 </body>
 </html>

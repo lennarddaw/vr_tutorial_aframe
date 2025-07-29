@@ -32,22 +32,67 @@ function initializeSimpleInteractions() {
 function setupSimpleEvents() {
     console.log('📦 Event-Handler werden eingerichtet...');
     
-    // Alle Code-Blöcke mit Click-Events ausstatten
-    const codeBlocks = document.querySelectorAll('.grabbable');
-    
-    codeBlocks.forEach(block => {
-        // Click Event für alle Plattformen
-        block.addEventListener('click', handleBlockClick);
+    // Warte noch etwas länger bis alle A-Frame Entities geladen sind
+    setTimeout(() => {
+        const codeBlocks = document.querySelectorAll('.grabbable');
+        console.log('🔍 Gefundene grabbable Blöcke:', codeBlocks.length);
         
-        // Hover-Effekte
-        block.addEventListener('mouseenter', handleBlockHover);
-        block.addEventListener('mouseleave', handleBlockUnhover);
+        if (codeBlocks.length === 0) {
+            console.log('❌ Keine grabbable Blöcke gefunden, versuche erneut...');
+            setTimeout(setupSimpleEvents, 500);
+            return;
+        }
         
-        console.log('✅ Events hinzugefügt für Block:', block.id);
+        codeBlocks.forEach(block => {
+            // Entferne eventuelle alte Event Listener
+            block.removeEventListener('click', handleBlockClick);
+            block.removeEventListener('mouseenter', handleBlockHover);
+            block.removeEventListener('mouseleave', handleBlockUnhover);
+            
+            // Füge neue Event Listener hinzu
+            block.addEventListener('click', handleBlockClick);
+            block.addEventListener('mouseenter', handleBlockHover);
+            block.addEventListener('mouseleave', handleBlockUnhover);
+            
+            // Zusätzlich: Touch Events für Mobile
+            block.addEventListener('touchstart', handleBlockTouch);
+            
+            // Visuelle Hinweise dass Block interaktiv ist
+            addInteractivityIndicator(block);
+            
+            console.log('✅ Events hinzugefügt für Block:', block.id);
+        });
+        
+        // Zusätzliche DOM Event Listener für bessere Kompatibilität
+        setupDOMEventListeners();
+        
+        SimpleInteractionState.isInitialized = true;
+        console.log('🎯 Einfaches Interaktionssystem bereit!');
+    }, 100);
+}
+
+function setupDOMEventListeners() {
+    // Globale Click-Handler für bessere Browser-Kompatibilität
+    document.addEventListener('click', function(event) {
+        // Prüfe ob geklicktes Element oder ein Parent grabbable ist
+        let target = event.target;
+        
+        // Durchsuche die DOM-Hierarchie nach grabbable Elements
+        while (target && target !== document) {
+            if (target.classList && target.classList.contains('grabbable')) {
+                console.log('🖱️ DOM Click erkannt auf:', target.id);
+                handleBlockClick({
+                    target: target,
+                    stopPropagation: () => event.stopPropagation(),
+                    preventDefault: () => event.preventDefault()
+                });
+                break;
+            }
+            target = target.parentElement;
+        }
     });
     
-    SimpleInteractionState.isInitialized = true;
-    console.log('🎯 Einfaches Interaktionssystem bereit!');
+    console.log('📱 DOM Event Listeners eingerichtet');
 }
 
 // ===========================
@@ -94,6 +139,21 @@ function handleBlockUnhover(event) {
     // Größe zurücksetzen
     block.setAttribute('animation__unhover', 
         'property: scale; to: 1 1 1; dur: 200; easing: easeInQuad');
+}
+
+function handleBlockTouch(event) {
+    const block = event.target;
+    
+    console.log('👆 Block berührt:', block.id);
+    
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Block zum Workspace hinzufügen
+    addBlockToWorkspaceSimple(block);
+    
+    // Visuelles Feedback
+    createClickEffect(block);
 }
 
 // ===========================
@@ -214,6 +274,17 @@ function createSuccessEffect(position) {
     }
 }
 
+function addInteractivityIndicator(block) {
+    // Sanfte Puls-Animation um zu zeigen, dass Block interaktiv ist
+    block.setAttribute('animation__pulse', 
+        'property: material.emissiveIntensity; to: 0.3; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine');
+    
+    // Cursor-Stil für Desktop
+    if (block.style) {
+        block.style.cursor = 'pointer';
+    }
+}
+
 // ===========================
 // WORKSPACE RESET
 // ===========================
@@ -259,12 +330,65 @@ function showLevelBlocksSimple(requiredBlocks) {
 }
 
 // ===========================
+// DEBUG UND TESTING
+// ===========================
+
+function debugInteractionSystem() {
+    console.log('🔍 Debug-Info für Interaktionssystem:');
+    console.log('- Initialisiert:', SimpleInteractionState.isInitialized);
+    console.log('- Workspace Slots:', SimpleInteractionState.currentWorkspaceSlot);
+    
+    const grabbable = document.querySelectorAll('.grabbable');
+    console.log('- Grabbable Blöcke gefunden:', grabbable.length);
+    
+    grabbable.forEach((block, index) => {
+        console.log(`  ${index + 1}. ${block.id} - Visible: ${block.getAttribute('visible')}`);
+    });
+    
+    const workspace = document.querySelectorAll('.workspace-block');
+    console.log('- Workspace Blöcke:', workspace.length);
+    
+    return {
+        initialized: SimpleInteractionState.isInitialized,
+        grabbableBlocks: grabbable.length,
+        workspaceBlocks: workspace.length
+    };
+}
+
+function forceTestBlockClick(blockId) {
+    const block = document.querySelector(`#${blockId}`);
+    if (block) {
+        console.log(`🧪 Teste Block-Click für: ${blockId}`);
+        addBlockToWorkspaceSimple(block);
+        return true;
+    } else {
+        console.log(`❌ Block nicht gefunden: ${blockId}`);
+        return false;
+    }
+}
+
+function reinitializeSystem() {
+    console.log('🔄 System wird neu initialisiert...');
+    SimpleInteractionState.isInitialized = false;
+    initializeSimpleInteractions();
+}
+
+// ===========================
 // ÖFFENTLICHE API
 // ===========================
 
-// Automatische Initialisierung
+// Automatische Initialisierung mit mehreren Versuchen
 document.addEventListener('DOMContentLoaded', () => {
-    // Kurze Verzögerung um sicherzustellen, dass A-Frame geladen ist
+    console.log('📚 DOM geladen, starte Interaktionssystem...');
+    
+    // Mehrere Initialisierungsversuche für bessere Zuverlässigkeit
+    setTimeout(initializeSimpleInteractions, 500);
+    setTimeout(initializeSimpleInteractions, 1500);
+    setTimeout(initializeSimpleInteractions, 3000);
+});
+
+// Zusätzliche Initialisierung wenn A-Frame Scene geladen ist
+window.addEventListener('load', () => {
     setTimeout(initializeSimpleInteractions, 1000);
 });
 
@@ -274,5 +398,9 @@ window.SimpleInteractions = {
     addBlockToWorkspaceSimple,
     clearWorkspaceSimple,
     showLevelBlocksSimple,
-    SimpleInteractionState
+    SimpleInteractionState,
+    // Debug-Funktionen
+    debugInteractionSystem,
+    forceTestBlockClick,
+    reinitializeSystem
 };
