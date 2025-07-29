@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VR CodeLab - Interaktives Programmieren Lernen</title>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
     <!-- A-Frame VR Framework -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <!-- Erweiterte Komponenten für bessere Interaktivität -->
@@ -21,9 +29,9 @@
             <div class="logo">
                 <h1>VR CodeLab</h1>
                 <div class="loading-animation">
-                    <div class="code-symbol">&lt;</div>
-                    <div class="code-symbol">/</div>
-                    <div class="code-symbol">&gt;</div>
+                    <div class="code-symbol"></div>
+                    <div class="code-symbol"></div>
+                    <div class="code-symbol"></div>
                 </div>
             </div>
             <p>Lade Programmier-Umgebung...</p>
@@ -39,11 +47,11 @@
         <header class="top-bar">
             <div class="left-section">
                 <h1 class="app-title">
-                    <span class="icon">🚀</span>
+                    <i data-lucide="rocket" class="icon"></i>
                     VR CodeLab
                 </h1>
                 <div class="level-indicator">
-                    <span class="level-label">Level:</span>
+                    <span class="level-label">Level</span>
                     <span id="current-level">1</span>
                     <span class="level-total">/ 5</span>
                 </div>
@@ -51,18 +59,25 @@
             
             <div class="right-section">
                 <div class="score-display">
-                    <span class="icon">⭐</span>
+                    <i data-lucide="trophy" class="icon"></i>
                     <span id="score">0</span>
                     <span class="score-label">Punkte</span>
                 </div>
-                <button id="help-btn" class="icon-btn" title="Hilfe">❓</button>
-                <button id="settings-btn" class="icon-btn" title="Einstellungen">⚙️</button>
+                <button id="help-btn" class="icon-btn" title="Hilfe">
+                    <i data-lucide="help-circle"></i>
+                </button>
+                <button id="settings-btn" class="icon-btn" title="Einstellungen">
+                    <i data-lucide="settings"></i>
+                </button>
             </div>
         </header>
 
         <!-- Task Panel -->
         <div id="task-panel" class="panel">
-            <h3>🎯 Deine Aufgabe</h3>
+            <h3>
+                <i data-lucide="target"></i>
+                Deine Aufgabe
+            </h3>
             <div id="task-description">
                 Willkommen! Erstelle dein erstes Programm, indem du Code-Blöcke kombinierst.
             </div>
@@ -79,17 +94,20 @@
 
         <!-- Code Output Panel -->
         <div id="code-panel" class="panel">
-            <h3>📝 Dein Code</h3>
+            <h3>
+                <i data-lucide="code-2"></i>
+                Dein Code
+            </h3>
             <div id="code-output" class="code-display">
                 <div class="code-line">// Dein Programm wird hier angezeigt</div>
             </div>
             <div class="panel-actions">
                 <button id="run-code-btn" class="action-btn primary">
-                    <span class="icon">▶️</span>
+                    <i data-lucide="play"></i>
                     Code ausführen
                 </button>
                 <button id="reset-code-btn" class="action-btn secondary">
-                    <span class="icon">🔄</span>
+                    <i data-lucide="rotate-ccw"></i>
                     Zurücksetzen
                 </button>
             </div>
@@ -97,7 +115,10 @@
 
         <!-- Instructions Panel -->
         <div id="instructions-panel" class="panel collapsed">
-            <h3>📚 Anleitung</h3>
+            <h3>
+                <i data-lucide="book-open"></i>
+                Anleitung
+            </h3>
             <div class="instruction-content">
                 <div class="control-info">
                     <h4>Steuerung:</h4>
@@ -110,10 +131,10 @@
                 <div class="concept-info">
                     <h4>Programmier-Konzepte:</h4>
                     <ul>
-                        <li>🟦 <strong>Variablen:</strong> Speichern Werte</li>
-                        <li>🟨 <strong>Funktionen:</strong> Führen Aktionen aus</li>
-                        <li>🟩 <strong>Schleifen:</strong> Wiederholen Code</li>
-                        <li>🟥 <strong>Bedingungen:</strong> Treffen Entscheidungen</li>
+                        <li><strong>Variablen:</strong> Speichern Werte</li>
+                        <li><strong>Funktionen:</strong> Führen Aktionen aus</li>
+                        <li><strong>Schleifen:</strong> Wiederholen Code</li>
+                        <li><strong>Bedingungen:</strong> Treffen Entscheidungen</li>
                     </ul>
                 </div>
             </div>
@@ -124,50 +145,50 @@
     <a-scene 
         id="main-scene"
         vr-mode-ui="enabled: true"
-        background="color: #1a1a2e; skyType: gradient; skyColor: #16213e #0f3460"
-        fog="type: exponential; color: #1a1a2e; density: 0.05"
+        background="color: #0a0a0a; skyType: gradient; skyColor: #1a1a1a #0a0a0a"
+        fog="type: exponential; color: #0a0a0a; density: 0.1"
         renderer="antialias: true; colorManagement: true; physicallyCorrectLights: true"
-        loading-screen="backgroundColor: #1a1a2e; dotsColor: #00d4ff">
+        loading-screen="backgroundColor: #0a0a0a; dotsColor: #84ACCE">
 
         <!-- Assets -->
         <a-assets>
             <!-- Code Block Mixins -->
             <a-mixin id="code-block-base"
                      geometry="primitive: box; width: 1.5; height: 0.8; depth: 0.3"
-                     material="metalness: 0.1; roughness: 0.3"
+                     material="metalness: 0.2; roughness: 0.4"
                      class="code-block grabbable"
-                     animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+                     animation__hover="property: scale; to: 1.05 1.05 1.05; startEvents: mouseenter; dur: 200"
                      animation__unhover="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
             </a-mixin>
 
             <!-- Variable Block -->
             <a-mixin id="variable-block"
                      mixin="code-block-base"
-                     material="color: #4a90e2; emissive: #1a365d; emissiveIntensity: 0.2">
+                     material="color: #4a90e2; emissive: #1e3a5f; emissiveIntensity: 0.15">
             </a-mixin>
 
             <!-- Function Block -->
             <a-mixin id="function-block"
                      mixin="code-block-base"
-                     material="color: #f5a623; emissive: #8b4513; emissiveIntensity: 0.2">
+                     material="color: #f5a623; emissive: #5c3a0d; emissiveIntensity: 0.15">
             </a-mixin>
 
             <!-- Loop Block -->
             <a-mixin id="loop-block"
                      mixin="code-block-base"
-                     material="color: #7ed321; emissive: #2d5a0b; emissiveIntensity: 0.2">
+                     material="color: #7ed321; emissive: #2d5a0b; emissiveIntensity: 0.15">
             </a-mixin>
 
             <!-- Condition Block -->
             <a-mixin id="condition-block"
                      mixin="code-block-base"
-                     material="color: #d0021b; emissive: #8b0000; emissiveIntensity: 0.2">
+                     material="color: #d0021b; emissive: #4a0108; emissiveIntensity: 0.15">
             </a-mixin>
 
             <!-- Workspace Platform -->
             <a-mixin id="workspace-platform"
                      geometry="primitive: box; width: 8; height: 0.2; depth: 4"
-                     material="color: #2c3e50; metalness: 0.2; roughness: 0.8"
+                     material="color: #2a2a2a; metalness: 0.3; roughness: 0.7"
                      class="workspace">
             </a-mixin>
 
@@ -188,14 +209,14 @@
         </a-entity>
 
         <!-- Code Blocks Area -->
-        <a-text value="📦 Code-Blöcke"
+        <a-text value="Code-Blöcke"
                 position="-6 2.5 -2"
                 mixin="holo-text"
-                color="#00d4ff"
-                text="width: 6">
+                color="#84ACCE"
+                text="width: 6; font: dejavu">
         </a-text>
 
-        <!-- Variable Blocks - KORRIGIERT -->
+        <!-- Variable Blocks -->
         <a-entity id="var-block-1"
                   mixin="variable-block"
                   position="-6 1.5 -2"
@@ -206,7 +227,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
@@ -220,11 +242,12 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
-        <!-- Function Blocks - KORRIGIERT -->
+        <!-- Function Blocks -->
         <a-entity id="func-block-1"
                   mixin="function-block"
                   position="-6 1.5 -0.5"
@@ -235,7 +258,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
@@ -249,7 +273,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
@@ -264,7 +289,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
@@ -278,7 +304,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu; width: 3">
             </a-text>
         </a-entity>
 
@@ -293,7 +320,8 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu">
             </a-text>
         </a-entity>
 
@@ -307,56 +335,57 @@
                     position="0 0 0.2"
                     align="center"
                     width="4"
-                    color="white">
+                    color="white"
+                    text="font: dejavu; width: 3">
             </a-text>
         </a-entity>
 
         <!-- Workspace Area -->
-        <a-text value="🔧 Arbeitsbereich"
+        <a-text value="Arbeitsbereich"
                 position="2 2.5 -4"
                 mixin="holo-text"
-                color="#7ed321"
-                text="width: 6">
+                color="#84ACCE"
+                text="width: 6; font: dejavu">
         </a-text>
 
         <!-- Workspace Grid Lines -->
         <a-entity id="workspace-grid">
             <!-- Horizontal Lines -->
             <a-entity geometry="primitive: plane; width: 6; height: 0.02"
-                      material="color: #34495e; transparent: true; opacity: 0.5"
+                      material="color: #374151; transparent: true; opacity: 0.6"
                       position="2 1.5 -4"></a-entity>
             <a-entity geometry="primitive: plane; width: 6; height: 0.02"
-                      material="color: #34495e; transparent: true; opacity: 0.5"
+                      material="color: #374151; transparent: true; opacity: 0.6"
                       position="2 1.0 -4"></a-entity>
             <a-entity geometry="primitive: plane; width: 6; height: 0.02"
-                      material="color: #34495e; transparent: true; opacity: 0.5"
+                      material="color: #374151; transparent: true; opacity: 0.6"
                       position="2 0.5 -4"></a-entity>
         </a-entity>
 
-        <!-- Robot Character -->
+        <!-- Robot Character (Modern Design) -->
         <a-entity id="robot-teacher"
                   position="5 1 -3">
             <!-- Robot Body -->
-            <a-box width="0.8" height="1.2" depth="0.6"
-                   color="#95a5a6"
-                   material="metalness: 0.8; roughness: 0.2">
+            <a-box width="0.8" height="1.2" depth=" 0.6"
+                   color="#374151"
+                   material="metalness: 0.7; roughness: 0.3">
             </a-box>
             <!-- Robot Head -->
             <a-sphere radius="0.4"
                       position="0 0.8 0"
-                      color="#ecf0f1"
-                      material="metalness: 0.8; roughness: 0.2">
+                      color="#4b5563"
+                      material="metalness: 0.7; roughness: 0.3">
             </a-sphere>
             <!-- Robot Eyes -->
-            <a-sphere radius="0.05"
+            <a-sphere radius="0.06"
                       position="-0.15 0.85 0.35"
-                      color="#3498db"
-                      material="emissive: #3498db; emissiveIntensity: 0.5">
+                      color="#84ACCE"
+                      material="emissive: #84ACCE; emissiveIntensity: 0.8">
             </a-sphere>
-            <a-sphere radius="0.05"
+            <a-sphere radius="0.06"
                       position="0.15 0.85 0.35"
-                      color="#3498db"
-                      material="emissive: #3498db; emissiveIntensity: 0.5">
+                      color="#84ACCE"
+                      material="emissive: #84ACCE; emissiveIntensity: 0.8">
             </a-sphere>
             
             <!-- Speech Bubble -->
@@ -365,51 +394,59 @@
                     position="0 1.8 0"
                     align="center"
                     width="4"
-                    color="#2c3e50"
-                    geometry="primitive: plane; width: 3; height: 1"
-                    material="color: white; transparent: true; opacity: 0.9">
+                    color="#1a1a1a"
+                    geometry="primitive: plane; width: 3.5; height: 1.2"
+                    material="color: #e5e5e5; transparent: true; opacity: 0.95"
+                    text="font: dejavu">
             </a-text>
             
             <!-- Idle Animation -->
             <a-animation attribute="rotation"
                          to="0 5 0"
-                         dur="3000"
+                         dur="4000"
                          direction="alternate"
-                         repeat="indefinite">
+                         repeat="indefinite"
+                         easing="easeInOutSine">
             </a-animation>
         </a-entity>
 
-        <!-- Lighting -->
+        <!-- Lighting (Modern Setup) -->
         <a-light type="ambient" 
-                 color="#404040" 
-                 intensity="0.3">
+                 color="#1a1a1a" 
+                 intensity="0.4">
         </a-light>
         
         <a-light type="directional"
                  position="4 8 4"
                  color="#ffffff"
-                 intensity="0.8"
+                 intensity="1.0"
                  shadow="cast: true; mapSize: 2048; cameraLeft: -10; cameraRight: 10; cameraTop: 10; cameraBottom: -10">
         </a-light>
         
         <a-light type="point"
                  position="0 4 -4"
-                 color="#00d4ff"
-                 intensity="0.4">
+                 color="#84ACCE"
+                 intensity="0.6">
+        </a-light>
+        
+        <a-light type="point"
+                 position="-6 2 -2"
+                 color="#4a90e2"
+                 intensity="0.3">
         </a-light>
 
         <!-- VR Controllers -->
         <a-entity id="left-controller"
                   laser-controls="hand: left"
-                  raycaster="objects: .grabbable; lineColor: #00d4ff; lineOpacity: 0.75"
-                  line="color: #00d4ff; opacity: 0.75"
+                  raycaster="objects: .grabbable; lineColor: #84ACCE; lineOpacity: 0.8"
+                  line="color: #84ACCE; opacity: 0.8"
                   grab-system="hand: left">
         </a-entity>
 
         <a-entity id="right-controller"
                   laser-controls="hand: right"
-                  raycaster="objects: .grabbable; lineColor: #ff6b35; lineOpacity: 0.75"
-                  line="color: #ff6b35; opacity: 0.75"
+                  raycaster="objects: .grabbable; lineColor: #84ACCE; lineOpacity: 0.8"
+                  line="color: #84ACCE; opacity: 0.8"
                   grab-system="hand: right">
         </a-entity>
 
@@ -421,7 +458,7 @@
                   cursor="rayOrigin: mouse; fuse: false"
                   raycaster="objects: .grabbable">
             <a-cursor geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                      material="color: #00d4ff; shader: flat; opacity: 0.9">
+                      material="color: #84ACCE; shader: flat; opacity: 0.9">
             </a-cursor>
         </a-camera>
 
@@ -435,5 +472,12 @@
     <script src="game-logic.js"></script>
     <script src="simple-interactions.js"></script>
     <script src="ui-controller.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

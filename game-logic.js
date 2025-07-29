@@ -158,7 +158,13 @@ function setupEventListeners() {
     
     runCodeBtn.addEventListener('click', executeCode);
     resetCodeBtn.addEventListener('click', resetWorkspace);
-    helpBtn.addEventListener('click', toggleInstructions);
+    helpBtn.addEventListener('click', () => {
+        if (window.UIController) {
+            window.UIController.showHelp();
+        } else {
+            toggleInstructions();
+        }
+    });
     settingsBtn.addEventListener('click', showSettings);
     
     // Keyboard shortcuts
@@ -209,7 +215,7 @@ function updateTaskDescription(level) {
         <h4>${challenge.title}</h4>
         <p>${challenge.description}</p>
         <div class="challenge-hint">
-            💡 <strong>Tipp:</strong> ${challenge.hint}
+            <strong>Tipp:</strong> ${challenge.hint}
         </div>
     `;
 }
@@ -341,12 +347,20 @@ function showExecutionResult(output) {
     const resultPanel = document.createElement('div');
     resultPanel.className = 'execution-result';
     resultPanel.innerHTML = `
-        <h4>📋 Programmausgabe:</h4>
+        <h4>
+            <i data-lucide="terminal" style="width: 20px; height: 20px; margin-right: 0.5rem;"></i>
+            Programmausgabe
+        </h4>
         ${output.map(line => `<div class="output-line">${escapeHtml(line)}</div>`).join('')}
     `;
     
     // Temporär anzeigen
     document.body.appendChild(resultPanel);
+    
+    // Lucide Icons initialisieren
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
     
     setTimeout(() => {
         resultPanel.remove();
@@ -535,11 +549,16 @@ function updateScoreDisplay() {
     const scoreElement = document.getElementById('score');
     scoreElement.textContent = GameState.score;
     
-    // Score-Animation
-    scoreElement.style.transform = 'scale(1.2)';
-    setTimeout(() => {
-        scoreElement.style.transform = 'scale(1)';
-    }, 200);
+    // Verwende die moderne Animation aus dem UI-Controller
+    if (window.UIController) {
+        window.UIController.animateScoreIncrease(scoreElement);
+    } else {
+        // Fallback-Animation
+        scoreElement.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            scoreElement.style.transform = 'scale(1)';
+        }, 200);
+    }
 }
 
 function escapeHtml(text) {
@@ -588,7 +607,11 @@ function createBlockPlacementEffect(blockElement) {
 function handleKeyboard(event) {
     switch (event.key.toLowerCase()) {
         case 'h':
-            toggleInstructions();
+            if (window.UIController) {
+                window.UIController.showHelp();
+            } else {
+                toggleInstructions();
+            }
             break;
         case 'r':
             if (event.ctrlKey) {
@@ -604,6 +627,8 @@ function handleKeyboard(event) {
             // Vollbild verlassen oder Panel schließen
             if (document.fullscreenElement) {
                 document.exitFullscreen();
+            } else if (window.UIController && window.UIController.UIState.helpShown) {
+                window.UIController.hideHelp();
             }
             break;
     }
