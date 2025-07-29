@@ -17,7 +17,7 @@ const GameState = {
     robotMessages: []
 };
 
-// Level-Konfiguration mit progressiven Lernzielen
+// Level-Konfiguration mit progressiven Lernzielen (KORREKT UND LÖSBAR)
 const LEVELS = {
     1: {
         title: "Erste Schritte: Variablen und Ausgabe",
@@ -27,9 +27,10 @@ const LEVELS = {
             {
                 id: "hello-world",
                 title: "Hallo Welt!",
-                description: "Erstelle eine Variable mit deinem Namen und gib sie aus.",
-                hint: "Ziehe zuerst einen Variablen-Block und dann einen console.log-Block.",
-                expectedCode: ["let name = 'Schüler';", "console.log(name);"],
+                description: "Erstelle dein erstes Programm: Verwende eine Variable und gib eine Nachricht aus.",
+                hint: "Klicke zuerst auf 'let name = Schüler' und dann auf 'console.log(Hallo!)'.",
+                expectedCode: ["let name = 'Schüler';", "console.log('Hallo!');"],
+                availableBlocks: ["var-block-2", "func-block-1"], // Spezifische Blöcke für dieses Level
                 successMessage: "Fantastisch! Du hast dein erstes Programm erstellt!"
             }
         ]
@@ -40,11 +41,12 @@ const LEVELS = {
         requiredBlocks: ["variable", "condition", "function"],
         challenges: [
             {
-                id: "age-check",
-                title: "Alterscheck",
-                description: "Erstelle ein Programm, das prüft ob jemand alt genug ist.",
-                hint: "Verwende eine Variable für das Alter und eine if-Bedingung.",
-                expectedCode: ["let alter = 16;", "if(alter >= 14) {", "console.log('Alt genug!');", "}"],
+                id: "number-check",
+                title: "Zahlen-Check",
+                description: "Erstelle ein Programm, das prüft ob eine Zahl groß genug ist.",
+                hint: "Verwende 'let zahl = 5', dann 'if(zahl > 3)' und schließlich eine Ausgabe.",
+                expectedCode: ["let zahl = 5;", "if(zahl > 3) {", "console.log('Hallo!');"],
+                availableBlocks: ["var-block-1", "condition-block-1", "func-block-1"],
                 successMessage: "Super! Du verstehst jetzt Bedingungen!"
             }
         ]
@@ -52,14 +54,15 @@ const LEVELS = {
     3: {
         title: "Wiederholungen: Schleifen",
         description: "Lerne wie du Code automatisch wiederholen lassen kannst.",
-        requiredBlocks: ["variable", "loop", "function"],
+        requiredBlocks: ["loop", "function"],
         challenges: [
             {
                 id: "counting",
-                title: "Zählen von 1 bis 3",
-                description: "Erstelle eine Schleife, die von 1 bis 3 zählt.",
-                hint: "Verwende eine for-Schleife mit console.log.",
-                expectedCode: ["for(let i = 1; i <= 3; i++) {", "console.log(i);", "}"],
+                title: "Zählen mit Schleifen",
+                description: "Erstelle eine Schleife, die eine Nachricht mehrmals ausgibt.",
+                hint: "Verwende 'for(let i = 0; i < 3; i++)' und 'console.log(Hallo!)'.",
+                expectedCode: ["for(let i = 0; i < 3; i++) {", "console.log('Hallo!');"],
+                availableBlocks: ["loop-block-1", "func-block-1"],
                 successMessage: "Excellent! Schleifen sparen viel Arbeit!"
             }
         ]
@@ -71,10 +74,11 @@ const LEVELS = {
         challenges: [
             {
                 id: "complex-program",
-                title: "Komplexes Programm",
-                description: "Erstelle ein Programm mit Variablen, Schleifen und Bedingungen.",
-                hint: "Kombiniere alle Blöcke zu einem funktionierenden Programm.",
-                expectedCode: ["let zahl = 5;", "for(let i = 1; i <= zahl; i++) {", "if(i % 2 === 0) {", "console.log(i + ' ist gerade');", "}", "}"],
+                title: "Alles zusammen",
+                description: "Erstelle ein Programm mit Variable, Schleife, Bedingung und Ausgabe.",
+                hint: "Kombiniere: Variable → Schleife → Bedingung → Ausgabe. Nutze alle 4 Block-Typen!",
+                expectedCode: ["let zahl = 5;", "for(let i = 0; i < 3; i++) {", "if(zahl > 3) {", "console.log('Hallo!');"],
+                availableBlocks: ["var-block-1", "loop-block-1", "condition-block-1", "func-block-1"],
                 successMessage: "Wow! Du bist ein echter Programmierer geworden!"
             }
         ]
@@ -87,9 +91,11 @@ const LEVELS = {
             {
                 id: "free-coding",
                 title: "Dein eigenes Programm",
-                description: "Erstelle ein eigenes Programm mit allen gelernten Konzepten.",
-                hint: "Sei kreativ! Kombiniere die Blöcke wie du möchtest.",
-                expectedCode: [], // Freies Programmieren
+                description: "Erstelle ein eigenes Programm mit mindestens 3 Code-Blöcken deiner Wahl.",
+                hint: "Sei kreativ! Kombiniere die Blöcke wie du möchtest. Mindestens 3 Blöcke verwenden.",
+                expectedCode: [], // Freies Programmieren - mindestens 3 Blöcke
+                availableBlocks: ["var-block-1", "var-block-2", "func-block-1", "func-block-2", "loop-block-1", "condition-block-1"],
+                minimumBlocks: 3, // Neues Kriterium für freies Programmieren
                 successMessage: "Herzlichen Glückwunsch! Du hast das VR CodeLab abgeschlossen!"
             }
         ]
@@ -215,15 +221,46 @@ function updateTaskDescription(level) {
 }
 
 function showLevelBlocks(requiredBlocks) {
-    // Verwende das einfache Interaktionssystem
-    if (window.SimpleInteractions) {
-        window.SimpleInteractions.showLevelBlocksSimple(requiredBlocks);
+    const currentLevel = LEVELS[GameState.currentLevel];
+    const challenge = currentLevel.challenges[0];
+    
+    console.log('📦 Zeige Blöcke für Level', GameState.currentLevel);
+    
+    // Alle Blöcke verstecken
+    document.querySelectorAll('.code-block').forEach(block => {
+        block.setAttribute('visible', 'false');
+    });
+    
+    // Spezifische Blöcke für Challenge anzeigen (falls definiert)
+    if (challenge.availableBlocks) {
+        console.log('🎯 Spezifische Blöcke für Challenge:', challenge.availableBlocks);
+        
+        challenge.availableBlocks.forEach(blockId => {
+            const block = document.getElementById(blockId);
+            if (block) {
+                block.setAttribute('visible', 'true');
+                
+                // Erscheinungs-Animation
+                block.setAttribute('animation__levelstart', 
+                    'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack');
+                
+                console.log(`✅ Block angezeigt: ${blockId}`);
+            } else {
+                console.log(`❌ Block nicht gefunden: ${blockId}`);
+            }
+        });
     } else {
-        // Fallback
+        // Fallback: Alle Blöcke des Typs anzeigen
+        console.log('📦 Fallback: Zeige alle Blöcke vom Typ:', requiredBlocks);
+        
         requiredBlocks.forEach(blockType => {
             const blocks = document.querySelectorAll(`[data-block-type="${blockType}"]`);
             blocks.forEach(block => {
                 block.setAttribute('visible', 'true');
+                
+                // Erscheinungs-Animation
+                block.setAttribute('animation__levelstart', 
+                    'property: scale; from: 0 0 0; to: 1 1 1; dur: 500; easing: easeOutBack');
             });
         });
     }
@@ -358,23 +395,67 @@ function checkChallengeCompletion() {
     const currentLevel = LEVELS[GameState.currentLevel];
     const challenge = currentLevel.challenges[0];
     
+    console.log('🔍 Prüfe Challenge-Completion für Level', GameState.currentLevel);
+    console.log('📝 Aktueller Code:', GameState.currentCode);
+    console.log('🎯 Erwarteter Code:', challenge.expectedCode);
+    
     // Freies Programmieren (Level 5)
     if (challenge.expectedCode.length === 0) {
-        if (GameState.currentCode.length >= 3) {
+        const minimumBlocks = challenge.minimumBlocks || 3;
+        if (GameState.currentCode.length >= minimumBlocks) {
+            console.log('✅ Freies Programmieren abgeschlossen!');
             completeChallenge(challenge);
+        } else {
+            console.log(`⏳ Noch ${minimumBlocks - GameState.currentCode.length} Blöcke benötigt`);
         }
         return;
     }
     
-    // Prüfe ob erwarteter Code erfüllt ist
-    const isComplete = challenge.expectedCode.every(expectedLine => 
-        GameState.currentCode.some(codeLine => 
-            codeLine.trim().includes(expectedLine.trim())
-        )
-    );
+    // Prüfe ob erwarteter Code erfüllt ist (flexibel)
+    const isComplete = challenge.expectedCode.every(expectedLine => {
+        const found = GameState.currentCode.some(codeLine => {
+            // Entferne Whitespace und Semikolons für flexibleren Vergleich
+            const cleanExpected = expectedLine.replace(/[;\s]/g, '');
+            const cleanActual = codeLine.replace(/[;\s]/g, '');
+            const matches = cleanActual.includes(cleanExpected) || cleanExpected.includes(cleanActual);
+            
+            if (matches) {
+                console.log(`✅ Match gefunden: "${codeLine}" erfüllt "${expectedLine}"`);
+            }
+            
+            return matches;
+        });
+        
+        if (!found) {
+            console.log(`❌ Fehlender Code: "${expectedLine}"`);
+        }
+        
+        return found;
+    });
     
     if (isComplete) {
+        console.log('🎉 Challenge abgeschlossen!');
         completeChallenge(challenge);
+    } else {
+        console.log('⏳ Challenge noch nicht vollständig');
+        
+        // Hilfreiche Hinweise geben
+        showProgressHint(challenge);
+    }
+}
+
+function showProgressHint(challenge) {
+    const missingBlocks = challenge.expectedCode.filter(expectedLine => {
+        return !GameState.currentCode.some(codeLine => {
+            const cleanExpected = expectedLine.replace(/[;\s]/g, '');
+            const cleanActual = codeLine.replace(/[;\s]/g, '');
+            return cleanActual.includes(cleanExpected) || cleanExpected.includes(cleanActual);
+        });
+    });
+    
+    if (missingBlocks.length > 0) {
+        const nextBlock = missingBlocks[0];
+        showRobotMessage(`Du brauchst noch: "${nextBlock}". ${challenge.hint}`, 4000);
     }
 }
 
@@ -662,11 +743,96 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ===========================
+// TEST UND VALIDIERUNG
+// ===========================
+
+function validateAllChallenges() {
+    console.log('🧪 Validiere alle Challenges...');
+    
+    let allValid = true;
+    
+    Object.keys(LEVELS).forEach(levelNum => {
+        const level = LEVELS[levelNum];
+        const challenge = level.challenges[0];
+        
+        console.log(`\n📋 Level ${levelNum}: ${challenge.title}`);
+        console.log(`📝 Erwarteter Code:`, challenge.expectedCode);
+        
+        if (challenge.availableBlocks) {
+            console.log(`🎯 Verfügbare Blöcke:`, challenge.availableBlocks);
+            
+            // Prüfe ob alle erwarteten Code-Teile durch verfügbare Blöcke erfüllbar sind
+            const canSolve = challenge.expectedCode.every(expectedCode => {
+                return challenge.availableBlocks.some(blockId => {
+                    const block = document.getElementById(blockId);
+                    if (block) {
+                        const blockCode = block.getAttribute('data-block-code');
+                        const cleanExpected = expectedCode.replace(/[;\s]/g, '');
+                        const cleanActual = blockCode.replace(/[;\s]/g, '');
+                        return cleanActual.includes(cleanExpected) || cleanExpected.includes(cleanActual);
+                    }
+                    return false;
+                });
+            });
+            
+            if (canSolve) {
+                console.log(`✅ Level ${levelNum} ist lösbar`);
+            } else {
+                console.log(`❌ Level ${levelNum} ist NICHT lösbar`);
+                allValid = false;
+            }
+        } else {
+            console.log(`⚠️ Level ${levelNum} hat keine spezifischen availableBlocks`);
+        }
+    });
+    
+    if (allValid) {
+        console.log(`\n🎉 Alle Challenges sind korrekt und lösbar!`);
+    } else {
+        console.log(`\n❌ Es gibt unlösbare Challenges!`);
+    }
+    
+    return allValid;
+}
+
+function testSolveLevel(levelNumber) {
+    console.log(`🧪 Teste Level ${levelNumber}...`);
+    
+    const level = LEVELS[levelNumber];
+    const challenge = level.challenges[0];
+    
+    if (!challenge.availableBlocks) {
+        console.log('❌ Keine spezifischen Blöcke definiert');
+        return;
+    }
+    
+    // Simuliere das Hinzufügen aller benötigten Blöcke
+    GameState.currentCode = [];
+    
+    challenge.availableBlocks.forEach(blockId => {
+        const block = document.getElementById(blockId);
+        if (block) {
+            const blockCode = block.getAttribute('data-block-code');
+            GameState.currentCode.push(blockCode);
+            console.log(`➕ Block hinzugefügt: ${blockCode}`);
+        }
+    });
+    
+    console.log('📝 Finaler Code:', GameState.currentCode);
+    
+    // Teste Challenge-Completion
+    checkChallengeCompletion();
+}
+
 // Export für andere Module
 window.VRCodeLab = {
     GameState,
     addBlockToWorkspace,
     executeCode,
     resetWorkspace,
-    showRobotMessage
+    showRobotMessage,
+    // Test-Funktionen
+    validateAllChallenges,
+    testSolveLevel
 };

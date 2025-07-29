@@ -122,7 +122,7 @@ window.EmergencyClickSystem = {
         return 'unknown';
     },
     
-    // Block-Code bestimmen
+    // Block-Code bestimmen (EXAKTE ÜBEREINSTIMMUNG MIT HTML)
     getBlockCode: function(blockId) {
         const codeMap = {
             'var-block-1': 'let zahl = 5;',
@@ -231,10 +231,14 @@ window.EmergencyClickSystem = {
         `;
         
         testContainer.innerHTML = `
-            <div>🚨 Notfall-Tests:</div>
-            <button onclick="EmergencyClickSystem.testBlock('var-block-1')" style="margin: 2px; padding: 5px;">Var 1</button>
-            <button onclick="EmergencyClickSystem.testBlock('func-block-1')" style="margin: 2px; padding: 5px;">Func 1</button>
-            <button onclick="EmergencyClickSystem.clearWorkspace()" style="margin: 2px; padding: 5px;">Clear</button>
+            <div style="font-weight: bold; margin-bottom: 5px;">🚨 Notfall-Tests:</div>
+            <button onclick="EmergencyClickSystem.testLevel(1)" style="margin: 1px; padding: 3px; font-size: 10px;">Level 1</button>
+            <button onclick="EmergencyClickSystem.testLevel(2)" style="margin: 1px; padding: 3px; font-size: 10px;">Level 2</button>
+            <button onclick="EmergencyClickSystem.testLevel(3)" style="margin: 1px; padding: 3px; font-size: 10px;">Level 3</button><br>
+            <button onclick="EmergencyClickSystem.testBlock('var-block-1')" style="margin: 1px; padding: 3px; font-size: 10px;">Var 1</button>
+            <button onclick="EmergencyClickSystem.testBlock('func-block-1')" style="margin: 1px; padding: 3px; font-size: 10px;">Func 1</button>
+            <button onclick="EmergencyClickSystem.clearWorkspace()" style="margin: 1px; padding: 3px; font-size: 10px;">Clear</button><br>
+            <button onclick="VRCodeLab.validateAllChallenges()" style="margin: 1px; padding: 3px; font-size: 10px;">Validate</button>
         `;
         
         document.body.appendChild(testContainer);
@@ -259,7 +263,41 @@ window.EmergencyClickSystem = {
         if (codeOutput) {
             codeOutput.innerHTML = '<div class="code-line">// Dein Programm wird hier angezeigt</div>';
         }
+        
+        // Auch das Game-State zurücksetzen
+        if (window.VRCodeLab && window.VRCodeLab.resetWorkspace) {
+            window.VRCodeLab.resetWorkspace();
+        }
+        
         console.log('🧹 Workspace geleert (Notfall)');
+    },
+    
+    // Level-Test für alle Blöcke eines Levels
+    testLevel: function(levelNumber) {
+        console.log(`🧪 Teste Level ${levelNumber} komplett...`);
+        
+        // Workspace erst leeren
+        this.clearWorkspace();
+        
+        // Level-spezifische Blöcke simulieren
+        const levelBlocks = {
+            1: ['var-block-2', 'func-block-1'], // Hallo Welt
+            2: ['var-block-1', 'condition-block-1', 'func-block-1'], // Zahlen-Check
+            3: ['loop-block-1', 'func-block-1'], // Schleifen
+            4: ['var-block-1', 'loop-block-1', 'condition-block-1', 'func-block-1'], // Alles kombiniert
+            5: ['var-block-1', 'var-block-2', 'func-block-1'] // Freies Programmieren (3 Blöcke)
+        };
+        
+        const blocksToTest = levelBlocks[levelNumber];
+        if (blocksToTest) {
+            blocksToTest.forEach((blockId, index) => {
+                setTimeout(() => {
+                    this.testBlock(blockId);
+                }, index * 500); // Verzögerung zwischen Blöcken
+            });
+        } else {
+            console.log(`❌ Keine Test-Blöcke für Level ${levelNumber} definiert`);
+        }
     }
 };
 
