@@ -1,8 +1,8 @@
-# 🚀 VR CodeLab - Interaktives Programmieren Lernen
+# VR CodeLab - Interaktives Programmieren Lernen
 
 Ein innovatives VR-Bildungsspiel, das Schülern spielerisch die Grundlagen des Programmierens beibringt. Durch das Kombinieren von visuellen Code-Blöcken in einer immersiven 3D-Umgebung lernen Schüler echte Programmierkonzepte kennen.
 
-## 🎯 Projektziel
+## Projektziel
 
 VR CodeLab wurde entwickelt, um:
 - **Programmierkonzepte visuell zu vermitteln** durch interaktive 3D-Code-Blöcke
@@ -10,32 +10,32 @@ VR CodeLab wurde entwickelt, um:
 - **Multiple Lernwege zu unterstützen** - VR, Desktop und Mobile
 - **Progressive Herausforderungen anzubieten** mit steigender Komplexität
 
-## ✨ Features
+## Features
 
-### 🎮 Multi-Platform Unterstützung
+### Multi-Platform Unterstützung
 - **VR-Headsets**: Vollständige VR-Erfahrung mit Hand-Controllern
 - **Desktop**: Maus-basierte Interaktion mit Keyboard-Shortcuts
 - **Mobile**: Touch-Gesten für Tablet und Smartphone
 
-### 📚 Programmier-Konzepte
+### Programmier-Konzepte
 - **🟦 Variablen**: Datenspeicherung und -verwaltung
 - **🟨 Funktionen**: Code-Ausführung und Ausgabe
 - **🟩 Schleifen**: Wiederholungsstrukturen
 - **🟥 Bedingungen**: Logische Entscheidungen
 
-### 🎓 Pädagogische Features
+### Pädagogische Features
 - **Progressive Level**: 5 aufeinander aufbauende Schwierigkeitsstufen
 - **CodeBot-Lehrer**: Interaktiver Roboter-Tutor mit Hilfestellungen
 - **Echtzeit-Feedback**: Sofortige Rückmeldung zu erstellten Programmen
 - **Gamification**: Punkte, Achievements und Erfolgs-Animationen
 
-### 🔧 Technische Highlights
+### Technische Highlights
 - **A-Frame VR Framework**: Moderne WebVR-Technologie
 - **Modularer Code**: Aufgeteilte Logik für bessere Wartbarkeit
 - **Responsive Design**: Optimiert für alle Bildschirmgrößen
 - **Accessibility**: Barrierefreie Bedienelemente
 
-## 🏗️ Projektstruktur
+## Projektstruktur
 
 ```
 VR-CodeLab/
@@ -47,7 +47,7 @@ VR-CodeLab/
 └── README.md           # Projektdokumentation
 ```
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### Voraussetzungen
 - Moderner Webbrowser mit WebVR-Unterstützung
@@ -75,7 +75,7 @@ VR-CodeLab/
 - **Windows Mixed Reality**: Edge Browser mit WebVR
 - **Mobile VR**: Google Cardboard oder Samsung Gear VR
 
-## 🎮 Spielanleitung
+## Spielanleitung
 
 ### Level-Übersicht
 
@@ -119,7 +119,7 @@ VR-CodeLab/
 - **Ctrl + Enter**: Code ausführen
 - **ESC**: Vollbild verlassen
 
-## 🔧 Technische Details
+## Technische Details
 
 ### Architektur
 
@@ -144,7 +144,7 @@ VR-CodeLab/
 - **LOD-System**: Level-of-Detail für VR
 - **Texture Compression**: Optimierte Materialien
 
-## 🎨 Anpassungen
+## Anpassungen
 
 ### Theme-System
 ```javascript
@@ -180,7 +180,7 @@ const LEVELS = {
 </a-entity>
 ```
 
-## 🤝 Pädagogischer Einsatz
+## Pädagogischer Einsatz
 
 ### Klassenzimmer-Integration
 - **Einzel-Stationen**: Ein VR-Headset pro Arbeitsplatz
@@ -199,7 +199,7 @@ const LEVELS = {
 - **Kreativität**: Innovation in freien Aufgaben
 - **Kollaboration**: Teamwork bei Gruppenprojekten
 
-## 🔮 Zukunftspläne
+## Zukunftspläne
 
 ### Geplante Features
 - [ ] **Multiplayer-Modus**: Gemeinsames Programmieren
@@ -214,22 +214,14 @@ const LEVELS = {
 - [ ] **WebRTC**: Peer-to-Peer Kollaboration
 - [ ] **Machine Learning**: Adaptive Schwierigkeit
 
-## 📄 Lizenz
+## Lizenz
 
 Dieses Projekt steht unter der MIT-Lizenz - siehe [LICENSE](LICENSE) für Details.
 
-## 🙏 Danksagungen
 
-- **A-Frame Team**: Für das fantastische WebVR-Framework
-- **Bildungsexperten**: Für pädagogische Beratung
-- **Beta-Tester**: Schüler und Lehrer für wertvolles Feedback
+## Kontakt & Support
 
-## 📞 Kontakt & Support
-
-- **Issues**: [GitHub Issues](https://github.com/username/vr-codelab/issues)
-- **Diskussionen**: [GitHub Discussions](https://github.com/username/vr-codelab/discussions)
-- **Email**: support@vr-codelab.edu
+- **Email**: lennardgross07@gmail.com
 
 ---
 
-**Entwickelt mit ❤️ für die nächste Generation von Programmierern**
