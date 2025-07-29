@@ -71,6 +71,8 @@
                     <span class="step active">1</span>
                     <span class="step">2</span>
                     <span class="step">3</span>
+                    <span class="step">4</span>
+                    <span class="step">5</span>
                 </div>
             </div>
         </div>
@@ -193,24 +195,10 @@
                 text="width: 6">
         </a-text>
 
-        <!-- Variable Blocks -->
+        <!-- Variable Blocks - KORRIGIERT -->
         <a-entity id="var-block-1"
                   mixin="variable-block"
                   position="-6 1.5 -2"
-                  data-block-type="variable"
-                  data-block-code="let zahl = 5;"
-                  class="grabbable code-block">
-            <a-text value="let zahl = 5"
-                    position="0 0 0.2"
-                    align="center"
-                    width="4"
-                    color="white">
-            </a-text>
-        </a-entity>
-
-        <a-entity id="var-block-2"
-                  mixin="variable-block"
-                  position="-6 0.5 -2"
                   data-block-type="variable"
                   data-block-code="let name = 'Schüler';"
                   class="grabbable code-block">
@@ -222,14 +210,28 @@
             </a-text>
         </a-entity>
 
-        <!-- Function Blocks -->
+        <a-entity id="var-block-2"
+                  mixin="variable-block"
+                  position="-6 0.5 -2"
+                  data-block-type="variable"
+                  data-block-code="let zahl = 5;"
+                  class="grabbable code-block">
+            <a-text value="let zahl = 5"
+                    position="0 0 0.2"
+                    align="center"
+                    width="4"
+                    color="white">
+            </a-text>
+        </a-entity>
+
+        <!-- Function Blocks - KORRIGIERT -->
         <a-entity id="func-block-1"
                   mixin="function-block"
                   position="-6 1.5 -0.5"
                   data-block-type="function"
-                  data-block-code="console.log('Hallo!');"
+                  data-block-code="console.log(name);"
                   class="grabbable code-block">
-            <a-text value="console.log('Hallo!')"
+            <a-text value="console.log(name)"
                     position="0 0 0.2"
                     align="center"
                     width="4"
@@ -241,9 +243,9 @@
                   mixin="function-block"
                   position="-6 0.5 -0.5"
                   data-block-type="function"
-                  data-block-code="alert(name);"
+                  data-block-code="console.log(zahl);"
                   class="grabbable code-block">
-            <a-text value="alert(name)"
+            <a-text value="console.log(zahl)"
                     position="0 0 0.2"
                     align="center"
                     width="4"
@@ -256,9 +258,23 @@
                   mixin="loop-block"
                   position="-6 1.5 1"
                   data-block-type="loop"
-                  data-block-code="for(let i = 0; i < 3; i++) {"
+                  data-block-code="for(let i = 1; i <= 3; i++) {"
                   class="grabbable code-block">
-            <a-text value="for(let i = 0; i < 3; i++)"
+            <a-text value="for(let i = 1; i <= 3; i++)"
+                    position="0 0 0.2"
+                    align="center"
+                    width="4"
+                    color="white">
+            </a-text>
+        </a-entity>
+
+        <a-entity id="loop-block-2"
+                  mixin="loop-block"
+                  position="-6 0.5 1"
+                  data-block-type="loop"
+                  data-block-code="}"
+                  class="grabbable code-block">
+            <a-text value="} (Schleife schließen)"
                     position="0 0 0.2"
                     align="center"
                     width="4"
@@ -269,11 +285,25 @@
         <!-- Condition Blocks -->
         <a-entity id="condition-block-1"
                   mixin="condition-block"
-                  position="-6 0.5 1"
+                  position="-6 1.5 2.5"
                   data-block-type="condition"
                   data-block-code="if(zahl > 3) {"
                   class="grabbable code-block">
             <a-text value="if(zahl > 3)"
+                    position="0 0 0.2"
+                    align="center"
+                    width="4"
+                    color="white">
+            </a-text>
+        </a-entity>
+
+        <a-entity id="condition-block-2"
+                  mixin="condition-block"
+                  position="-6 0.5 2.5"
+                  data-block-type="condition"
+                  data-block-code="}"
+                  class="grabbable code-block">
+            <a-text value="} (Bedingung schließen)"
                     position="0 0 0.2"
                     align="center"
                     width="4"
@@ -331,7 +361,7 @@
             
             <!-- Speech Bubble -->
             <a-text id="robot-speech"
-                    value="Hallo! Ich bin CodeBot. Ziehe Code-Blöcke in den Arbeitsbereich!"
+                    value="Hallo! Ich bin CodeBot. Klicke auf Code-Blöcke um sie zu verwenden!"
                     position="0 1.8 0"
                     align="center"
                     width="4"

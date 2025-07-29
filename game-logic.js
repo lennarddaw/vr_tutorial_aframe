@@ -44,7 +44,7 @@ const LEVELS = {
                 title: "Alterscheck",
                 description: "Erstelle ein Programm, das prüft ob jemand alt genug ist.",
                 hint: "Verwende eine Variable für das Alter und eine if-Bedingung.",
-                expectedCode: ["let alter = 16;", "if(alter >= 14) {", "console.log('Alt genug!');", "}"],
+                expectedCode: ["let zahl = 5;", "if(zahl > 3) {", "console.log(zahl);", "}"],
                 successMessage: "Super! Du verstehst jetzt Bedingungen!"
             }
         ]
@@ -59,7 +59,7 @@ const LEVELS = {
                 title: "Zählen von 1 bis 3",
                 description: "Erstelle eine Schleife, die von 1 bis 3 zählt.",
                 hint: "Verwende eine for-Schleife mit console.log.",
-                expectedCode: ["for(let i = 1; i <= 3; i++) {", "console.log(i);", "}"],
+                expectedCode: ["for(let i = 1; i <= 3; i++) {", "console.log", "}"],
                 successMessage: "Excellent! Schleifen sparen viel Arbeit!"
             }
         ]
@@ -74,7 +74,7 @@ const LEVELS = {
                 title: "Komplexes Programm",
                 description: "Erstelle ein Programm mit Variablen, Schleifen und Bedingungen.",
                 hint: "Kombiniere alle Blöcke zu einem funktionierenden Programm.",
-                expectedCode: ["let zahl = 5;", "for(let i = 1; i <= zahl; i++) {", "if(i % 2 === 0) {", "console.log(i + ' ist gerade');", "}", "}"],
+                expectedCode: ["let zahl = 5;", "for(let i = 1; i <= 3; i++) {", "if(zahl > 3) {", "console.log", "}", "}"],
                 successMessage: "Wow! Du bist ein echter Programmierer geworden!"
             }
         ]
@@ -241,13 +241,14 @@ function addBlockToWorkspace(blockElement) {
     GameState.currentCode.push(blockCode);
     
     console.log(`📦 Block hinzugefügt: ${blockType} - ${blockCode}`);
+    console.log('📋 Aktueller Code:', GameState.currentCode);
     
     // UI aktualisieren
     updateCodeDisplay();
     
     // Robot-Feedback
     const message = ROBOT_MESSAGES.blockPlaced.replace('{blockType}', blockType);
-    showRobotMessage(message);
+    showRobotMessage(message, 3000);
     
     // Prüfen ob Challenge gelöst
     checkChallengeCompletion();
@@ -303,7 +304,7 @@ function simulateCodeExecution(codeLines) {
             const varValue = line.match(/= (.+);/)?.[1];
             if (varName && varValue) {
                 variables[varName] = varValue.replace(/'/g, '');
-                output.push(`Variable ${varName} erstellt`);
+                output.push(`Variable ${varName} erstellt mit Wert: ${variables[varName]}`);
             }
         } else if (line.includes('console.log')) {
             // Console output
@@ -323,10 +324,12 @@ function simulateCodeExecution(codeLines) {
             }
         } else if (line.includes('for(')) {
             // Schleife
-            output.push('Schleife wird ausgeführt...');
+            output.push('Schleife startet...');
         } else if (line.includes('if(')) {
             // Bedingung
             output.push('Bedingung wird geprüft...');
+        } else if (line === '}') {
+            output.push('Block geschlossen');
         }
     }
     
@@ -338,7 +341,7 @@ function showExecutionResult(output) {
     const resultPanel = document.createElement('div');
     resultPanel.className = 'execution-result';
     resultPanel.innerHTML = `
-        <h4>📋 Ausgabe:</h4>
+        <h4>📋 Programmausgabe:</h4>
         ${output.map(line => `<div class="output-line">${escapeHtml(line)}</div>`).join('')}
     `;
     
@@ -347,16 +350,20 @@ function showExecutionResult(output) {
     
     setTimeout(() => {
         resultPanel.remove();
-    }, 3000);
+    }, 4000);
 }
 
 // ===========================
-// CHALLENGE-SYSTEM
+// CHALLENGE-SYSTEM (VERBESSERT)
 // ===========================
 
 function checkChallengeCompletion() {
     const currentLevel = LEVELS[GameState.currentLevel];
     const challenge = currentLevel.challenges[0];
+    
+    console.log('🔍 Prüfe Challenge-Completion für Level', GameState.currentLevel);
+    console.log('📋 Erwarteter Code:', challenge.expectedCode);
+    console.log('📋 Aktueller Code:', GameState.currentCode);
     
     // Freies Programmieren (Level 5)
     if (challenge.expectedCode.length === 0) {
@@ -366,15 +373,62 @@ function checkChallengeCompletion() {
         return;
     }
     
-    // Prüfe ob erwarteter Code erfüllt ist
-    const isComplete = challenge.expectedCode.every(expectedLine => 
-        GameState.currentCode.some(codeLine => 
-            codeLine.trim().includes(expectedLine.trim())
-        )
-    );
+    // Verbesserte Challenge-Überprüfung
+    const isComplete = checkCodeRequirements(GameState.currentCode, challenge.expectedCode);
     
     if (isComplete) {
+        console.log('✅ Challenge erfüllt!');
         completeChallenge(challenge);
+    } else {
+        console.log('❌ Challenge noch nicht erfüllt');
+        
+        // Zusätzlicher Hinweis wenn schon einige Blöcke platziert wurden
+        if (GameState.currentCode.length > 0) {
+            showRobotMessage("Du bist auf dem richtigen Weg! Schaue nochmal genau auf die Aufgabe.", 4000);
+        }
+    }
+}
+
+function checkCodeRequirements(currentCode, expectedCode) {
+    // Flexiblere Überprüfung je nach Level
+    switch (GameState.currentLevel) {
+        case 1:
+            // Level 1: Variable und passende console.log
+            const hasVariable = currentCode.some(line => line.includes("let name = 'Schüler';"));
+            const hasConsoleLog = currentCode.some(line => line.includes("console.log(name);"));
+            return hasVariable && hasConsoleLog;
+            
+        case 2:
+            // Level 2: Variable, if-Bedingung, console.log, schließende Klammer
+            const hasZahl = currentCode.some(line => line.includes("let zahl = 5;"));
+            const hasIf = currentCode.some(line => line.includes("if(zahl > 3) {"));
+            const hasLogInIf = currentCode.some(line => line.includes("console.log(zahl);"));
+            const hasClosing = currentCode.some(line => line === "}");
+            return hasZahl && hasIf && hasLogInIf && hasClosing;
+            
+        case 3:
+            // Level 3: For-Schleife mit console.log
+            const hasFor = currentCode.some(line => line.includes("for(let i = 1; i <= 3; i++) {"));
+            const hasLogInFor = currentCode.some(line => line.includes("console.log"));
+            const hasForClosing = currentCode.some(line => line === "}");
+            return hasFor && hasLogInFor && hasForClosing;
+            
+        case 4:
+            // Level 4: Kombination aller Elemente
+            const hasVar4 = currentCode.some(line => line.includes("let zahl = 5;"));
+            const hasFor4 = currentCode.some(line => line.includes("for(let i = 1; i <= 3; i++) {"));
+            const hasIf4 = currentCode.some(line => line.includes("if(zahl > 3) {"));
+            const hasLog4 = currentCode.some(line => line.includes("console.log"));
+            const hasClosing4 = currentCode.filter(line => line === "}").length >= 2;
+            return hasVar4 && hasFor4 && hasIf4 && hasLog4 && hasClosing4;
+            
+        default:
+            // Fallback: Prüfe ob alle erwarteten Codes vorhanden sind
+            return expectedCode.every(expectedLine => 
+                currentCode.some(codeLine => 
+                    codeLine.trim().includes(expectedLine.trim())
+                )
+            );
     }
 }
 
@@ -388,21 +442,21 @@ function completeChallenge(challenge) {
     createSuccessEffect();
     
     // Robot-Nachricht
-    showRobotMessage(challenge.successMessage);
+    showRobotMessage(challenge.successMessage, 5000);
     
     // Score erhöhen
-    GameState.score += 50;
+    GameState.score += 100;
     updateScoreDisplay();
     
     // Nächstes Level nach kurzer Verzögerung
     setTimeout(() => {
         completeLevel();
-    }, 3000);
+    }, 4000);
 }
 
 function completeLevel() {
     const message = ROBOT_MESSAGES.levelComplete.replace('{level}', GameState.currentLevel);
-    showRobotMessage(message);
+    showRobotMessage(message, 4000);
     
     // Progress-Steps aktualisieren
     updateProgressSteps();
@@ -410,7 +464,7 @@ function completeLevel() {
     // Nächstes Level
     setTimeout(() => {
         startLevel(GameState.currentLevel + 1);
-    }, 2000);
+    }, 3000);
 }
 
 function updateProgressSteps() {
@@ -474,7 +528,7 @@ function resetWorkspace() {
     const workspaceBlocks = document.querySelectorAll('.workspace-block');
     workspaceBlocks.forEach(block => block.remove());
     
-    showRobotMessage("Arbeitsbereich zurückgesetzt. Lass uns von vorne anfangen!");
+    showRobotMessage("Arbeitsbereich zurückgesetzt. Lass uns von vorne anfangen!", 3000);
 }
 
 function updateScoreDisplay() {
@@ -562,7 +616,11 @@ function toggleInstructions() {
 
 function showSettings() {
     // Einfache Einstellungen
-    alert('Einstellungen werden in einer zukünftigen Version verfügbar sein!');
+    if (window.UIController) {
+        window.UIController.showNotification('Einstellungen werden in einer zukünftigen Version verfügbar sein!', 'info');
+    } else {
+        alert('Einstellungen werden in einer zukünftigen Version verfügbar sein!');
+    }
 }
 
 function animateCodeExecution() {
