@@ -198,7 +198,8 @@
                   mixin="variable-block"
                   position="-6 1.5 -2"
                   data-block-type="variable"
-                  data-block-code="let zahl = 5;">
+                  data-block-code="let zahl = 5;"
+                  class="grabbable code-block">
             <a-text value="let zahl = 5"
                     position="0 0 0.2"
                     align="center"
@@ -211,7 +212,8 @@
                   mixin="variable-block"
                   position="-6 0.5 -2"
                   data-block-type="variable"
-                  data-block-code="let name = 'Schüler';">
+                  data-block-code="let name = 'Schüler';"
+                  class="grabbable code-block">
             <a-text value="let name = 'Schüler'"
                     position="0 0 0.2"
                     align="center"
@@ -225,7 +227,8 @@
                   mixin="function-block"
                   position="-6 1.5 -0.5"
                   data-block-type="function"
-                  data-block-code="console.log('Hallo!');">
+                  data-block-code="console.log('Hallo!');"
+                  class="grabbable code-block">
             <a-text value="console.log('Hallo!')"
                     position="0 0 0.2"
                     align="center"
@@ -238,7 +241,8 @@
                   mixin="function-block"
                   position="-6 0.5 -0.5"
                   data-block-type="function"
-                  data-block-code="alert(name);">
+                  data-block-code="alert(name);"
+                  class="grabbable code-block">
             <a-text value="alert(name)"
                     position="0 0 0.2"
                     align="center"
@@ -252,7 +256,8 @@
                   mixin="loop-block"
                   position="-6 1.5 1"
                   data-block-type="loop"
-                  data-block-code="for(let i = 0; i < 3; i++) {">
+                  data-block-code="for(let i = 0; i < 3; i++) {"
+                  class="grabbable code-block">
             <a-text value="for(let i = 0; i < 3; i++)"
                     position="0 0 0.2"
                     align="center"
@@ -266,7 +271,8 @@
                   mixin="condition-block"
                   position="-6 0.5 1"
                   data-block-type="condition"
-                  data-block-code="if(zahl > 3) {">
+                  data-block-code="if(zahl > 3) {"
+                  class="grabbable code-block">
             <a-text value="if(zahl > 3)"
                     position="0 0 0.2"
                     align="center"
@@ -382,10 +388,10 @@
                   look-controls="pointerLockEnabled: false"
                   wasd-controls="acceleration: 20; fly: true"
                   position="0 2 2"
-                  cursor="rayOrigin: mouse; fuse: false">
+                  cursor="rayOrigin: mouse; fuse: false"
+                  raycaster="objects: .grabbable">
             <a-cursor geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                      material="color: #00d4ff; shader: flat; opacity: 0.9"
-                      raycaster="objects: .grabbable">
+                      material="color: #00d4ff; shader: flat; opacity: 0.9">
             </a-cursor>
         </a-camera>
 
@@ -397,7 +403,7 @@
 
     <!-- External JavaScript -->
     <script src="game-logic.js"></script>
-    <script src="drag-drop.js"></script>
+    <script src="simple-interactions.js"></script>
     <script src="ui-controller.js"></script>
 </body>
 </html>
